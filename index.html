@@ -70,34 +70,35 @@
     </div>
     
     <script>
-        document.getElementById('login-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            
-            // Check credentials
-            if (username === 'addo' && password === 'suamianne') {
-                // Set login status in localStorage
-                localStorage.setItem('financeAppLoggedIn', 'true');
-                
-                // Redirect to main app
-                window.location.href = 'app.html';
-            } else {
-                // Show error message
-                document.getElementById('login-error').classList.remove('hidden');
-                
-                // Clear password field
-                document.getElementById('password').value = '';
-            }
-        });
+        // Ubah kode login
+document.getElementById('login-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    
+    // Check credentials
+    if (username === 'addo' && password === 'suamianne') {
+        // Set login status in sessionStorage (bukan localStorage)
+        sessionStorage.setItem('financeAppLoggedIn', 'true');
         
-        // Check if already logged in
-        window.addEventListener('DOMContentLoaded', function() {
-            if (localStorage.getItem('financeAppLoggedIn') === 'true') {
-                window.location.href = 'app.html';
-            }
-        });
+        // Redirect to main app
+        window.location.href = 'app.html';
+    } else {
+        // Show error message
+        document.getElementById('login-error').classList.remove('hidden');
+        
+        // Clear password field
+        document.getElementById('password').value = '';
+    }
+});
+
+// Check if already logged in
+window.addEventListener('DOMContentLoaded', function() {
+    if (sessionStorage.getItem('financeAppLoggedIn') === 'true') {
+        window.location.href = 'app.html';
+    }
+});
     </script>
 </body>
 </html>
