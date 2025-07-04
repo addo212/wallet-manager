@@ -2102,6 +2102,11 @@ function updateTransactionList(filterMonth = 'all', filterType = 'all') {
                 if (dateInput) {
                     dateInput.value = new Date().toISOString().split('T')[0];
                 }
+		// Set today's date as default for wallet transfer
+		const walletTransferDate = document.getElementById('wallet-transfer-date');
+		if (walletTransferDate) {
+    			walletTransferDate.value = new Date().toISOString().split('T')[0];
+		}
                 
                 // Initialize transaction type change handler
                 const transactionType = document.getElementById('transaction-type');
