@@ -1,0 +1,2033 @@
+<!--Segmen 1: Bagian awal HTML hingga akhir tab Transaksi-->
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Finance Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .transaction-item:hover {
+            transform: translateX(5px);
+            transition: transform 0.2s ease;
+        }
+        
+        .card-glowing {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: box-shadow 0.3s ease;
+        }
+        
+        .card-glowing:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Added styles for better mobile experience */
+        @media (max-width: 640px) {
+            .tab-button {
+                padding: 0.75rem 0.5rem;
+                font-size: 0.75rem;
+            }
+        }
+
+        /* Added styles for form validation */
+        input:invalid, select:invalid {
+            border-color: #ef4444;
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <!-- Header -->
+        <header class="mb-8 text-center">
+    <div class="relative">
+        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/b18dd4a0-0d58-435e-84fa-c9fa6ad2469f.png" alt="Finance dashboard header with coins, wallet and savings symbols on teal background in modern design" class="w-full h-40 object-cover rounded-lg mb-4" />
+        <button onclick="logout()" class="absolute top-2 right-2 bg-white bg-opacity-80 hover:bg-opacity-100 text-red-600 font-medium py-1 px-3 rounded-md text-sm transition duration-150 ease-in-out">
+            Logout
+        </button>
+    </div>
+    <h1 class="text-3xl font-bold text-gray-800">Personal Finance Tracker</h1>
+    <p class="text-gray-600">Kelola pendapatan, pengeluaran, dan transfer dengan mudah</p>
+</header>
+
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <div class="bg-white rounded-lg shadow p-6 card-glowing">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-medium text-gray-700">Saldo Dompet</h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <p id="wallet-balance" class="text-2xl font-semibold my-2">Rp0</p>
+                <span class="text-sm text-gray-500">Total saldo saat ini</span>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow p-6 card-glowing">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-medium text-gray-700">Bulan Ini</h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                </div>
+                <p id="monthly-balance" class="text-2xl font-semibold my-2">Rp0</p>
+                <span class="text-sm text-gray-500">Pendapatan - Pengeluaran</span>
+            </div>
+        </div>
+        
+        <!-- Navigation Tabs -->
+        <div class="mb-6 border-b border-gray-200">
+            <nav class="flex flex-col sm:flex-row">
+                <button onclick="showTab('transactions')" class="py-4 px-6 font-medium text-sm border-b-2 border-transparent hover:border-blue-500 hover:text-blue-600 focus:outline-none tab-button active">
+                    Transaksi
+                </button>
+                <button onclick="showTab('transfer')" class="py-4 px-6 font-medium text-sm border-b-2 border-transparent hover:border-purple-500 hover:text-purple-600 focus:outline-none tab-button">
+                    Transfer
+                </button>
+                <button onclick="showTab('budget')" class="py-4 px-6 font-medium text-sm border-b-2 border-transparent hover:border-yellow-500 hover:text-yellow-600 focus:outline-none tab-button">
+                    Budget
+                </button>
+                <button onclick="showTab('realization')" class="py-4 px-6 font-medium text-sm border-b-2 border-transparent hover:border-red-500 hover:text-red-600 focus:outline-none tab-button">
+                    Realisasi
+                </button>
+            </nav>
+        </div>
+
+        <!-- Transactions Tab -->
+        <div id="transactions" class="tab-content active">
+            <div class="bg-white rounded-lg shadow overflow-hidden mb-6">
+                <div class="p-4 border-b border-gray-200">
+                    <h2 class="text-lg font-medium text-gray-800">Catat Transaksi Baru</h2>
+                </div>
+                <div class="p-4">
+                    <form id="transaction-form" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="col-span-1 md:col-span-2">
+                            <label for="transaction-name" class="block text-sm font-medium text-gray-700 mb-1">Nama Transaksi</label>
+                            <input type="text" id="transaction-name" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="Contoh: Gaji Bulanan" required>
+                            <div class="error-message" id="transaction-name-error"></div>
+                        </div>
+                        <div>
+                            <label for="transaction-amount" class="block text-sm font-medium text-gray-700 mb-1">Jumlah (Rp)</label>
+                            <input type="number" id="transaction-amount" min="1" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="100000" required>
+                            <div class="error-message" id="transaction-amount-error"></div>
+                        </div>
+                        <div>
+                            <label for="transaction-type" class="block text-sm font-medium text-gray-700 mb-1">Tipe</label>
+                            <select id="transaction-type" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+                                <option value="" disabled selected>-- Pilih Tipe --</option>
+                                <option value="income">Pendapatan</option>
+                                <option value="expense">Pengeluaran</option>
+                            </select>
+                            <div class="error-message" id="transaction-type-error"></div>
+                        </div>
+                        <div class="col-span-1 md:col-span-2">
+                            <label for="transaction-date" class="block text-sm font-medium text-gray-700 mb-1">Tanggal</label>
+                            <input type="date" id="transaction-date" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+                            <div class="error-message" id="transaction-date-error"></div>
+                        </div>
+                        <div>
+                            <label for="transaction-wallet" class="block text-sm font-medium text-gray-700 mb-1">Dompet</label>
+                            <select id="transaction-wallet" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+                                <option value="" disabled selected>-- Pilih Dompet --</option>
+                                <option value="aldric">Aldric</option>
+                                <option value="kas_ado">Kas Ado</option>
+                                <option value="kas_ane">Kas Ane</option>
+                                <option value="bca">BCA</option>
+                                <option value="livin">Livin Mandiri</option>
+                                <option value="jatim">Bank Jatim</option>
+                                <option value="seabank">Seabank</option>
+                                <option value="jago">Jago</option>
+                                <option value="celengan">Celengan</option>
+                                <option value="saving">Saving</option>
+                                <option value="ksi">KSI</option>
+                                <option value="blu">Blu</option>
+                                <option value="kur">KUR</option>
+                                <option value="other">Other</option>
+                                <option value="bankmas">BankMas</option>
+                            </select>
+                            <div class="error-message" id="transaction-wallet-error"></div>
+                        </div>
+                        <div>
+                            <label for="transaction-category" class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
+                            <select id="transaction-category" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+                                <option value="" disabled selected>-- Pilih Kategori --</option>
+                                <optgroup label="Pendapatan" id="income-categories">
+                                    <option value="gaji_addo">Gaji Addo</option>
+                                    <option value="gaji_anne">Gaji Anne</option>
+                                    <option value="bonus_addo">Bonus Addo</option>
+                                    <option value="bonus_anne">Bonus Anne</option>
+                                    <option value="thr_addo">THR Addo</option>
+                                    <option value="thr_anne">THR Anne</option>
+                                    <option value="other_revenue">Other Revenue</option>
+                                </optgroup>
+                                <optgroup label="Kebutuhan" id="expense-categories-needs">
+                                    <option value="daycare">Daycare</option>
+                                    <option value="food_groceries">Food & Food Groceries</option>
+                                    <option value="diapers">Diapers</option>
+                                    <option value="milk">Milk</option>
+                                    <option value="water_electrics">Water & Electrics</option>
+                                    <option value="internet">Internet</option>
+                                    <option value="cell_services">Cell Services</option>
+                                    <option value="iuran_rutin">Iuran Rutin</option>
+                                </optgroup>
+                                <optgroup label="Transportasi" id="expense-categories-transport">
+                                    <option value="gas_ad">Gas Ad</option>
+                                    <option value="gas_an">Gas An</option>
+                                    <option value="gas_mobil">Gas Mobil</option>
+                                    <option value="perawatan_kendaraan">Perawatan Kendaraan</option>
+                                </optgroup>
+                                <optgroup label="Personal" id="expense-categories-personal">
+                                    <option value="snack_ad">Snack Ad</option>
+                                    <option value="snack_an">Snack An</option>
+                                    <option value="personal_care">Personal Care</option>
+                                    <option value="pakaian">Pakaian</option>
+                                    <option value="laundry">Laundry</option>
+                                    <option value="medicine">Medicine</option>
+                                </optgroup>
+                                <optgroup label="Rumah" id="expense-categories-home">
+                                    <option value="homecare">Homecare</option>
+                                    <option value="sewa_garasi">Sewa Garasi</option>
+                                    <option value="groceries">Groceries</option>
+                                </optgroup>
+                                <optgroup label="Lainnya" id="expense-categories-other">
+                                    <option value="ayah">Ayah</option>
+                                    <option value="save_emergency">Save for Emergency</option>
+                                    <option value="cc_bill">CC Bill</option>
+                                    <option value="hiburan">Hiburan - Wisata Dll</option>
+                                    <option value="kondangan">Kondangan, Iuran, Dll</option>
+                                    <option value="cicilan">Cicilan</option>
+                                    <option value="other">Other Will</option>
+                                    <option value="other_expense">Other Expense</option>
+                                </optgroup>
+                            </select>
+                            <div class="error-message" id="transaction-category-error"></div>
+                        </div>
+                        <div class="col-span-4">
+                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out">
+                                Catat Transaksi
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow overflow-hidden">
+                <div class="p-4 border-b border-gray-200 flex justify-between items-center flex-wrap gap-2">
+                    <h2 class="text-lg font-medium text-gray-800">Riwayat Transaksi</h2>
+                    <div class="flex gap-2 flex-wrap">
+                        <select id="filter-month" class="px-3 py-1 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            <option value="all">Semua Bulan</option>
+                            <option value="1">Januari</option>
+                            <option value="2">Februari</option>
+                            <option value="3">Maret</option>
+                            <option value="4">April</option>
+                            <option value="5">Mei</option>
+                            <option value="6">Juni</option>
+                            <option value="7">Juli</option>
+                            <option value="8">Agustus</option>
+                            <option value="9">September</option>
+                            <option value="10">Oktober</option>
+                            <option value="11">November</option>
+                            <option value="12">Desember</option>
+                        </select>
+                        <select id="filter-type" class="px-3 py-1 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            <option value="all">Semua Tipe</option>
+                            <option value="income">Pendapatan</option>
+                            <option value="expense">Pengeluaran</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="divide-y divide-gray-200">
+                    <div id="transaction-list" class="divide-y divide-gray-200">
+                        <!-- Transactions will be loaded here -->
+                        <div class="p-4 text-center text-gray-500">Belum ada transaksi</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<!--Segmen 1: Bagian akhir segmen-->
+
+
+<!--Segmen 2: Bagian awal segmen Transfer-->
+
+        <!-- Transfer Tab -->
+        <div id="transfer" class="tab-content">
+            <div class="bg-white rounded-lg shadow overflow-hidden mb-6">
+                <div class="p-4 border-b border-gray-200">
+                    <h2 class="text-lg font-medium text-gray-800">Transfer Antar Dompet</h2>
+                </div>
+                <div class="p-4">
+                    <form id="wallet-transfer-form">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label for="wallet-transfer-from" class="block text-sm font-medium text-gray-700 mb-1">Dari Dompet</label>
+                                <select id="wallet-transfer-from" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500" required>
+                                    <option value="" disabled selected>-- Pilih Dompet --</option>
+                                    <option value="aldric">Aldric</option>
+                                    <option value="kas_ado">Kas Ado</option>
+                                    <option value="kas_ane">Kas Ane</option>
+                                    <option value="bca">BCA</option>
+                                    <option value="livin">Livin Mandiri</option>
+                                    <option value="jatim">Bank Jatim</option>
+                                    <option value="seabank">Seabank</option>
+                                    <option value="jago">Jago</option>
+                                    <option value="celengan">Celengan</option>
+                                    <option value="saving">Saving</option>
+                                    <option value="ksi">KSI</option>
+                                    <option value="blu">Blu</option>
+                                    <option value="kur">KUR</option>
+                                    <option value="other">Other</option>
+                                    <option value="bankmas">BankMas</option>
+                                </select>
+                                <div class="error-message" id="wallet-transfer-from-error"></div>
+                            </div>
+                            <div>
+                                <label for="wallet-transfer-to" class="block text-sm font-medium text-gray-700 mb-1">Ke Dompet</label>
+                                <select id="wallet-transfer-to" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500" required>
+                                    <option value="" disabled selected>-- Pilih Dompet --</option>
+                                    <option value="aldric">Aldric</option>
+                                    <option value="kas_ado">Kas Ado</option>
+                                    <option value="kas_ane">Kas Ane</option>
+                                    <option value="bca">BCA</option>
+                                    <option value="livin">Livin Mandiri</option>
+                                    <option value="jatim">Bank Jatim</option>
+                                    <option value="seabank">Seabank</option>
+                                    <option value="jago">Jago</option>
+                                    <option value="celengan">Celengan</option>
+                                    <option value="saving">Saving</option>
+                                    <option value="ksi">KSI</option>
+                                    <option value="blu">Blu</option>
+                                    <option value="kur">KUR</option>
+                                    <option value="other">Other</option>
+                                    <option value="bankmas">BankMas</option>
+                                </select>
+                                <div class="error-message" id="wallet-transfer-to-error"></div>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="wallet-transfer-amount" class="block text-sm font-medium text-gray-700 mb-1">Jumlah (Rp)</label>
+                            <input type="number" id="wallet-transfer-amount" min="1" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500" placeholder="1000000" required>
+                            <div class="error-message" id="wallet-transfer-amount-error"></div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="wallet-transfer-note" class="block text-sm font-medium text-gray-700 mb-1">Catatan</label>
+                            <input type="text" id="wallet-transfer-note" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500" placeholder="Contoh: Transfer dari BCA ke Kas">
+                        </div>
+                        <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out">
+                            Transfer Antar Dompet
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Riwayat Transfer -->
+            <div class="bg-white rounded-lg shadow overflow-hidden">
+                <div class="p-4 border-b border-gray-200">
+                    <h2 class="text-lg font-medium text-gray-800">Riwayat Transfer Antar Dompet</h2>
+                </div>
+                <div class="divide-y divide-gray-200">
+                    <div id="wallet-transfer-history" class="divide-y divide-gray-200">
+                        <div class="p-4 text-center text-gray-500">Belum ada riwayat transfer antar dompet</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Saldo Dompet -->
+            <div class="mt-6 bg-white rounded-lg shadow overflow-hidden">
+                <div class="p-4 border-b border-gray-200">
+                    <h2 class="text-lg font-medium text-gray-800">Saldo Per Dompet</h2>
+                </div>
+                <div class="p-4">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="wallet-balances">
+                        <!-- Wallet balances will be displayed here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+<!-- Segmen 2 - Bagian akhir segmen 2 -->
+<!-- Segmen 3 Budget Tab- Bagian awal segmen 3 -->
+
+<!-- Budget Tab -->
+        <div id="budget" class="tab-content">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <div class="p-4 border-b border-gray-200">
+                        <h2 class="text-lg font-medium text-gray-800">Buat Budget Baru</h2>
+                    </div>
+                    <div class="p-4">
+                        <form id="budget-form">
+                            <div class="mb-4">
+                                <label for="budget-category" class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
+                                <select id="budget-category" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500" required>
+                                    <option value="" disabled selected>-- Pilih Kategori --</option>
+                                    <optgroup label="Kebutuhan">
+                                        <option value="daycare">Daycare</option>
+                                        <option value="food_groceries">Food & Food Groceries</option>
+                                        <option value="diapers">Diapers</option>
+                                        <option value="milk">Milk</option>
+                                        <option value="water_electrics">Water & Electrics</option>
+                                        <option value="internet">Internet</option>
+                                        <option value="cell_services">Cell Services</option>
+                                        <option value="iuran_rutin">Iuran Rutin</option>
+                                    </optgroup>
+                                    <optgroup label="Transportasi">
+                                        <option value="gas_ad">Gas Ad</option>
+                                        <option value="gas_an">Gas An</option>
+                                        <option value="gas_mobil">Gas Mobil</option>
+                                        <option value="perawatan_kendaraan">Perawatan Kendaraan</option>
+                                    </optgroup>
+                                    <optgroup label="Personal">
+                                        <option value="snack_ad">Snack Ad</option>
+                                        <option value="snack_an">Snack An</option>
+                                        <option value="personal_care">Personal Care</option>
+                                        <option value="pakaian">Pakaian</option>
+                                        <option value="laundry">Laundry</option>
+                                        <option value="medicine">Medicine</option>
+                                    </optgroup>
+                                    <optgroup label="Rumah">
+                                        <option value="homecare">Homecare</option>
+                                        <option value="sewa_garasi">Sewa Garasi</option>
+                                        <option value="groceries">Groceries</option>
+                                    </optgroup>
+                                    <optgroup label="Lainnya">
+                                        <option value="ayah">Ayah</option>
+                                        <option value="save_emergency">Save for Emergency</option>
+                                        <option value="cc_bill">CC Bill</option>
+                                        <option value="hiburan">Hiburan - Wisata Dll</option>
+                                        <option value="kondangan">Kondangan, Iuran, Dll</option>
+                                        <option value="cicilan">Cicilan</option>
+                                        <option value="other">Other Will</option>
+                                        <option value="other_expense">Other Expense</option>
+                                    </optgroup>
+                                </select>
+                                <div class="error-message" id="budget-category-error"></div>
+                            </div>
+                            <div class="mb-4">
+                                <label for="budget-amount" class="block text-sm font-medium text-gray-700 mb-1">Jumlah Budget (Rp)</label>
+                                <input type="number" id="budget-amount" min="1" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500" placeholder="1000000" required>
+                                <div class="error-message" id="budget-amount-error"></div>
+                            </div>
+                            <div class="mb-4">
+                                <label for="budget-month" class="block text-sm font-medium text-gray-700 mb-1">Bulan</label>
+                                <select id="budget-month" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500" required>
+                                    <option value="1">Januari</option>
+                                    <option value="2">Februari</option>
+                                    <option value="3">Maret</option>
+                                    <option value="4">April</option>
+                                    <option value="5">Mei</option>
+                                    <option value="6">Juni</option>
+                                    <option value="7">Juli</option>
+                                    <option value="8">Agustus</option>
+                                    <option value="9">September</option>
+                                    <option value="10">Oktober</option>
+                                    <option value="11">November</option>
+                                    <option value="12">Desember</option>
+                                </select>
+                                <div class="error-message" id="budget-month-error"></div>
+                            </div>
+                            <div class="mb-4">
+                                <label for="budget-year" class="block text-sm font-medium text-gray-700 mb-1">Tahun</label>
+                                <input type="number" id="budget-year" min="2023" max="2030" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500" placeholder="2025" required>
+                                <div class="error-message" id="budget-year-error"></div>
+                            </div>
+                            <div class="mb-4">
+                                <label for="budget-note" class="block text-sm font-medium text-gray-700 mb-1">Catatan</label>
+                                <input type="text" id="budget-note" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500" placeholder="Catatan budget">
+                            </div>
+                            <button type="submit" class="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out">
+                                Simpan Budget
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <div class="p-4 border-b border-gray-200">
+                        <h2 class="text-lg font-medium text-gray-800">Ringkasan Budget</h2>
+                    </div>
+                    <div class="p-4">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <label for="budget-filter-month" class="block text-sm font-medium text-gray-700 mb-1">Bulan</label>
+                                <select id="budget-filter-month" class="px-3 py-1 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500">
+                                    <option value="1">Januari</option>
+                                    <option value="2">Februari</option>
+                                    <option value="3">Maret</option>
+                                    <option value="4">April</option>
+                                    <option value="5">Mei</option>
+                                    <option value="6">Juni</option>
+                                    <option value="7">Juli</option>
+                                    <option value="8">Agustus</option>
+                                    <option value="9">September</option>
+                                    <option value="10">Oktober</option>
+                                    <option value="11">November</option>
+                                    <option value="12">Desember</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="budget-filter-year" class="block text-sm font-medium text-gray-700 mb-1">Tahun</label>
+                                <select id="budget-filter-year" class="px-3 py-1 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500">
+                                    <option value="2023">2023</option>
+                                    <option value="2024">2024</option>
+                                    <option value="2025">2025</option>
+                                    <option value="2026">2026</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <h3 class="font-medium text-gray-700 mb-2">Total Budget Bulan Ini</h3>
+                            <p id="total-budget" class="text-xl font-semibold mb-4">Rp0</p>
+                            
+                            <div id="budget-summary" class="space-y-4">
+                                <div class="p-4 text-center text-gray-500">Belum ada budget yang dibuat</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow overflow-hidden mt-6">
+                <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+                    <h2 class="text-lg font-medium text-gray-800">Daftar Budget</h2>
+                </div>
+                <div class="divide-y divide-gray-200">
+                    <div id="budget-list" class="divide-y divide-gray-200">
+                        <div class="p-4 text-center text-gray-500">Belum ada budget yang dibuat</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+<!-- Batas akhir segmen 3-->
+
+
+  <!-- Realization Tab -->
+        <div id="realization" class="tab-content">
+            <div class="bg-white rounded-lg shadow overflow-hidden mb-6">
+                <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+                    <h2 class="text-lg font-medium text-gray-800">Realisasi Budget</h2>
+                    <div class="flex gap-2">
+                        <select id="realization-filter-month" class="px-3 py-1 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-red-500 focus:border-red-500">
+                            <option value="1">Januari</option>
+                            <option value="2">Februari</option>
+                            <option value="3">Maret</option>
+                            <option value="4">April</option>
+                            <option value="5">Mei</option>
+                            <option value="6">Juni</option>
+                            <option value="7">Juli</option>
+                            <option value="8">Agustus</option>
+                            <option value="9">September</option>
+                            <option value="10">Oktober</option>
+                            <option value="11">November</option>
+                            <option value="12">Desember</option>
+                        </select>
+                        <select id="realization-filter-year" class="px-3 py-1 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-red-500 focus:border-red-500">
+                            <option value="2023">2023</option>
+                            <option value="2024">2024</option>
+                            <option value="2025">2025</option>
+                            <option value="2026">2026</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div class="bg-white rounded-lg border border-gray-200 p-4">
+                            <h3 class="text-sm font-medium text-gray-700 mb-2">Total Budget</h3>
+                            <p id="realization-total-budget" class="text-xl font-semibold">Rp0</p>
+                        </div>
+                        <div class="bg-white rounded-lg border border-gray-200 p-4">
+                            <h3 class="text-sm font-medium text-gray-700 mb-2">Total Pengeluaran</h3>
+                            <p id="realization-total-expense" class="text-xl font-semibold">Rp0</p>
+                        </div>
+                        <div class="bg-white rounded-lg border border-gray-200 p-4">
+                            <h3 class="text-sm font-medium text-gray-700 mb-2">Sisa Budget</h3>
+                            <p id="realization-remaining" class="text-xl font-semibold">Rp0</p>
+                        </div>
+                    </div>
+                    
+                    <div id="realization-list" class="space-y-4">
+                        <div class="p-4 text-center text-gray-500">Belum ada data realisasi</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow overflow-hidden">
+                <div class="p-4 border-b border-gray-200">
+                    <h2 class="text-lg font-medium text-gray-800">Grafik Realisasi</h2>
+                </div>
+                <div class="p-4">
+                    <div class="h-64 flex items-center justify-center" id="realization-chart">
+                        <p class="text-gray-500">Grafik akan ditampilkan di sini</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Management Section -->
+        <div class="mt-8 bg-white rounded-lg shadow overflow-hidden">
+            <div class="p-4 border-b border-gray-200">
+                <h2 class="text-lg font-medium text-gray-800">Pengaturan Data</h2>
+            </div>
+            <div class="p-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button id="export-data" class="bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out">
+                        Export Data (Backup)
+                    </button>
+                    <div class="relative">
+                        <input type="file" id="import-file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" accept=".json">
+                        <button id="import-data" class="w-full bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out">
+                            Import Data (Restore)
+                        </button>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <button id="reset-data" class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out">
+                        Reset Semua Data
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+ <script>
+
+      // Check login status
+      window.addEventListener('DOMContentLoaded', function() {
+          if (localStorage.getItem('financeAppLoggedIn') !== 'true') {
+              window.location.href = 'index.html';
+          }
+      });
+
+      // Add logout function
+      function logout() {
+      localStorage.removeItem('financeAppLoggedIn');
+          window.location.href = 'index.html';
+      }
+        // Initialize app data
+        let financeData = {
+            wallet: 0, // Total saldo semua dompet
+            wallets: {  // Saldo per dompet
+                aldric: 0,
+                kas_ado: 0,
+                kas_ane: 0,
+                bca: 0,
+                livin: 0,
+                jatim: 0,
+                seabank: 0,
+                jago: 0,
+                celengan: 0,
+                saving: 0,
+                ksi: 0,
+                blu: 0,
+                kur: 0,
+                other: 0,
+                bankmas: 0
+            },
+            transactions: [],
+            walletTransfers: [], // Untuk transfer antar dompet
+            budgets: [],
+            version: "1.3.0" // Updated version
+        };
+        
+        // DOM Elements
+        const transactionForm = document.getElementById('transaction-form');
+        const walletTransferForm = document.getElementById('wallet-transfer-form');
+        const budgetForm = document.getElementById('budget-form');
+        const transactionList = document.getElementById('transaction-list');
+        const walletTransferHistory = document.getElementById('wallet-transfer-history');
+        const filterMonth = document.getElementById('filter-month');
+        const filterType = document.getElementById('filter-type');
+
+        // Tab control
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(tabId).classList.add('active');
+            
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+                button.classList.remove('border-blue-500', 'border-green-500', 'border-purple-500', 'border-yellow-500', 'border-red-500');
+                button.classList.remove('text-blue-600', 'text-green-600', 'text-purple-600', 'text-yellow-600', 'text-red-600');
+            });
+            
+            // Find the button that corresponds to this tab and add active class
+            const button = document.querySelector(`button[onclick="showTab('${tabId}')"]`);
+            if (button) {
+                button.classList.add('active');
+                
+                if (tabId === 'transactions') {
+                    button.classList.add('border-blue-500', 'text-blue-600');
+                } else if (tabId === 'transfer') {
+                    button.classList.add('border-purple-500', 'text-purple-600');
+                    updateWalletBalances();
+                    updateWalletTransferHistory();
+                } else if (tabId === 'budget') {
+                    button.classList.add('border-yellow-500', 'text-yellow-600');
+                    updateBudgetUI();
+                } else if (tabId === 'realization') {
+                    button.classList.add('border-red-500', 'text-red-600');
+                    updateRealizationUI();
+                }
+            }
+        }
+        
+        // Format number to Rupiah
+        function formatRupiah(amount) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(amount);
+        }
+        
+        // Get current month and year
+        function getCurrentMonthYear() {
+            const date = new Date();
+            const month = date.getMonth() + 1;
+            const year = date.getFullYear();
+            return { month, year };
+        }
+        
+        // Load data from localStorage
+        function loadData() {
+            const savedData = localStorage.getItem('financeData');
+            if (savedData) {
+                const parsedData = JSON.parse(savedData);
+                
+                // Handle data migration for older versions
+                if (!parsedData.version || parsedData.version < financeData.version) {
+                    // Initialize new fields if they don't exist
+                    if (!parsedData.budgets) parsedData.budgets = [];
+                    if (!parsedData.walletTransfers) parsedData.walletTransfers = [];
+                    
+                    // Initialize wallets if they don't exist
+                    if (!parsedData.wallets) {
+                        parsedData.wallets = {
+                            aldric: 0,
+                            kas_ado: 0,
+                            kas_ane: 0,
+                            bca: 0,
+                            livin: 0,
+                            jatim: 0,
+                            seabank: 0,
+                            jago: 0,
+                            celengan: 0,
+                            saving: 0,
+                            ksi: 0,
+                            blu: 0,
+                            kur: 0,
+                            other: 0,
+                            bankmas: 0
+                        };
+                        
+                        // Distribute existing wallet balance to 'other' wallet
+                        if (parsedData.wallet > 0) {
+                            parsedData.wallets.other = parsedData.wallet;
+                        }
+                    }
+                    
+                    parsedData.version = financeData.version;
+                    
+                    // Convert old transaction types to new format if needed
+                    if (parsedData.transactions && parsedData.transactions.length > 0) {
+                        parsedData.transactions = parsedData.transactions.map(t => {
+                            // If using old type format (gaji_*, bonus_*, thr_*, other_revenue)
+                            if (t.type && (t.type.includes('gaji_') || t.type.includes('bonus_') || 
+                                t.type.includes('thr_') || t.type === 'other_revenue')) {
+                                return {
+                                    ...t,
+                                    type: 'income'
+                                };
+                            }
+                            return t;
+                        });
+                        
+                        // Update wallet balances based on existing transactions
+                        parsedData.transactions.forEach(t => {
+                            const wallet = t.wallet || 'other';
+                            if (!parsedData.wallets[wallet]) {
+                                parsedData.wallets[wallet] = 0;
+                            }
+                            
+                            if (t.type === 'income') {
+                                parsedData.wallets[wallet] += t.amount;
+                            } else if (t.type === 'expense') {
+                                parsedData.wallets[wallet] -= t.amount;
+                            }
+                        });
+                    }
+                }
+                
+                financeData = parsedData;
+                updateUI();
+            }
+            
+            // Set current month and year in filters
+            const { month, year } = getCurrentMonthYear();
+            
+            if (document.getElementById('budget-filter-month')) {
+                document.getElementById('budget-filter-month').value = month;
+            }
+            
+            if (document.getElementById('budget-filter-year')) {
+                document.getElementById('budget-filter-year').value = year;
+            }
+            
+            if (document.getElementById('realization-filter-month')) {
+                document.getElementById('realization-filter-month').value = month;
+            }
+            
+            if (document.getElementById('realization-filter-year')) {
+                document.getElementById('realization-filter-year').value = year;
+            }
+            
+            if (document.getElementById('budget-year')) {
+                document.getElementById('budget-year').value = year;
+            }
+            
+            if (document.getElementById('budget-month')) {
+                document.getElementById('budget-month').value = month;
+            }
+        }
+        
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('financeData', JSON.stringify(financeData));
+        }
+
+        // Update all UI elements
+        function updateUI() {
+            try {
+                // Update balances
+                document.getElementById('wallet-balance').textContent = formatRupiah(financeData.wallet);
+                
+                // Calculate monthly balance
+                const currentMonth = getCurrentMonthYear().month;
+                const monthlyIncome = financeData.transactions
+                    .filter(t => t.type === 'income' && new Date(t.date).getMonth() + 1 === currentMonth)
+                    .reduce((sum, t) => sum + t.amount, 0);
+                    
+                const monthlyExpense = financeData.transactions
+                    .filter(t => t.type === 'expense' && new Date(t.date).getMonth() + 1 === currentMonth)
+                    .reduce((sum, t) => sum + t.amount, 0);
+                    
+                const monthlyBalance = monthlyIncome - monthlyExpense;
+                document.getElementById('monthly-balance').textContent = formatRupiah(monthlyBalance);
+                
+                // Update transaction list
+                if (document.getElementById('transaction-list')) {
+                    updateTransactionList(filterMonth ? filterMonth.value : 'all', filterType ? filterType.value : 'all');
+                }
+                
+                // Update wallet transfer history
+                if (document.getElementById('wallet-transfer-history')) {
+                    updateWalletTransferHistory();
+                }
+
+                // Update wallet balances
+                if (document.getElementById('wallet-balances')) {
+                    updateWalletBalances();
+                }
+                
+                // Update budget UI if on budget tab
+                const budgetTab = document.getElementById('budget');
+                if (budgetTab && budgetTab.classList.contains('active')) {
+                    updateBudgetUI();
+                }
+                
+                // Update realization UI if on realization tab
+                const realizationTab = document.getElementById('realization');
+                if (realizationTab && realizationTab.classList.contains('active')) {
+                    updateRealizationUI();
+                }
+            } catch (error) {
+                console.error("Error updating UI:", error);
+            }
+        }
+        
+        // Update transaction list
+        function updateTransactionList(filterMonth = 'all', filterType = 'all') {
+            transactionList.innerHTML = '';
+            
+            let filteredTransactions = [...financeData.transactions];
+            
+            if (filterMonth !== 'all') {
+                filteredTransactions = filteredTransactions.filter(
+                    t => new Date(t.date).getMonth() + 1 === parseInt(filterMonth)
+                );
+            }
+            
+            if (filterType !== 'all') {
+                filteredTransactions = filteredTransactions.filter(t => t.type === filterType);
+            }
+            
+            if (filteredTransactions.length === 0) {
+                transactionList.innerHTML = '<div class="p-4 text-center text-gray-500">Tidak ada transaksi</div>';
+                return;
+            }
+            
+            filteredTransactions.sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(transaction => {
+                const transactionItem = document.createElement('div');
+                transactionItem.className = 'p-4 transaction-item hover:bg-gray-50';
+                
+                const isIncome = transaction.type === 'income';
+                const amountClass = isIncome ? 'text-green-600' : 'text-red-600';
+                const transactionDate = new Date(transaction.date).toLocaleDateString('id-ID');
+                
+                transactionItem.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h4 class="font-medium">${transaction.name}</h4>
+                            <div class="flex items-center text-sm text-gray-500 mt-1">
+                                <span>${transactionDate}</span>
+                                <span class="mx-2">•</span>
+                                <span>${getCategoryName(transaction.category)}</span>
+                                <span class="mx-2">•</span>
+                                <span>${getWalletName(transaction.wallet)}</span>
+                            </div>
+                        </div>
+                        <span class="${amountClass} font-medium">${isIncome ? '+' : '-'}${formatRupiah(transaction.amount)}</span>
+                        <div class="flex space-x-2">
+                            <button onclick="editTransaction(${transaction.id})" class="text-blue-500 hover:text-blue-700">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                </svg>
+                            </button>
+                            <button onclick="deleteTransaction(${transaction.id})" class="text-red-500 hover:text-red-700">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                transactionList.appendChild(transactionItem);
+            });
+        }
+        
+        // Update wallet transfer history
+        function updateWalletTransferHistory() {
+    const walletTransferHistory = document.getElementById('wallet-transfer-history');
+    if (!walletTransferHistory) {
+        console.error("Element 'wallet-transfer-history' tidak ditemukan!");
+        return;
+    }
+    
+    walletTransferHistory.innerHTML = '';
+    
+    if (!financeData.walletTransfers || financeData.walletTransfers.length === 0) {
+        walletTransferHistory.innerHTML = '<div class="p-4 text-center text-gray-500">Belum ada riwayat transfer antar dompet</div>';
+        return;
+    }
+    
+    financeData.walletTransfers.sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(transfer => {
+        const transferItem = document.createElement('div');
+        transferItem.className = 'p-4 transaction-item hover:bg-gray-50';
+        
+        const transferDate = new Date(transfer.date).toLocaleDateString('id-ID');
+        
+        transferItem.innerHTML = `
+            <div class="flex justify-between items-center">
+                <div>
+                    <h4 class="font-medium">${transfer.note || 'Transfer antar dompet'}</h4>
+                    <div class="flex items-center text-sm text-gray-500 mt-1">
+                        <span>${transferDate}</span>
+                        <span class="mx-2">•</span>
+                        <span>${getWalletName(transfer.from)} → ${getWalletName(transfer.to)}</span>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <span class="text-gray-600 font-medium mr-4">${formatRupiah(transfer.amount)}</span>
+                    <div class="flex space-x-2">
+                        <button onclick="editWalletTransfer(${transfer.id})" class="text-blue-500 hover:text-blue-700">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                        </button>
+                        <button onclick="deleteWalletTransfer(${transfer.id})" class="text-red-500 hover:text-red-700">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        walletTransferHistory.appendChild(transferItem);
+    });
+}
+        // Update wallet balances display
+        function updateWalletBalances() {
+            const walletBalancesContainer = document.getElementById('wallet-balances');
+            if (!walletBalancesContainer) {
+                console.error("Element 'wallet-balances' tidak ditemukan!");
+                return;
+            }
+            
+            walletBalancesContainer.innerHTML = ''; // Kosongkan container
+
+            // Hitung total saldo dompet
+            let totalWalletBalance = 0;
+            
+            // Buat kartu untuk setiap dompet
+            for (const wallet in financeData.wallets) {
+                const balance = financeData.wallets[wallet];
+                totalWalletBalance += balance;
+                
+                // Tampilkan semua dompet, termasuk yang saldonya 0
+                const walletCard = document.createElement('div');
+                walletCard.className = 'bg-white rounded-lg border border-gray-200 p-4';
+                walletCard.innerHTML = `
+                    <h3 class="text-sm font-medium text-gray-700 mb-2">${getWalletName(wallet)}</h3>
+                    <p class="text-xl font-semibold">${formatRupiah(balance)}</p>
+                `;
+                walletBalancesContainer.appendChild(walletCard);
+            }
+            
+            // Update total saldo dompet
+            financeData.wallet = totalWalletBalance;
+            
+            // Tambahkan kartu untuk total saldo
+            const totalCard = document.createElement('div');
+            totalCard.className = 'bg-white rounded-lg border border-blue-200 p-4 col-span-2 md:col-span-4';
+            totalCard.innerHTML = `
+                <h3 class="text-sm font-medium text-blue-700 mb-2">Total Saldo Dompet</h3>
+                <p class="text-xl font-semibold">${formatRupiah(totalWalletBalance)}</p>
+            `;
+            walletBalancesContainer.appendChild(totalCard);
+        }
+        
+        // Update Budget UI
+        function updateBudgetUI() {
+            const month = parseInt(document.getElementById('budget-filter-month').value);
+            const year = parseInt(document.getElementById('budget-filter-year').value);
+            
+            // Filter budgets for selected month and year
+            const filteredBudgets = financeData.budgets.filter(b => 
+                b.month === month && b.year === year
+            );
+            
+            // Update budget list
+            const budgetList = document.getElementById('budget-list');
+            budgetList.innerHTML = '';
+            
+            if (filteredBudgets.length === 0) {
+                budgetList.innerHTML = '<div class="p-4 text-center text-gray-500">Belum ada budget untuk periode ini</div>';
+            } else {
+                filteredBudgets.forEach(budget => {
+                    const budgetItem = document.createElement('div');
+                    budgetItem.className = 'p-4 transaction-item hover:bg-gray-50';
+                    
+                    // Calculate usage from transactions
+                    const usage = calculateBudgetUsage(budget.category, month, year);
+                    const percentage = budget.amount > 0 ? Math.min(Math.round((usage / budget.amount) * 100), 100) : 0;
+                    const remaining = budget.amount - usage;
+                    
+                    // Determine progress bar color based on usage percentage
+                    let progressColor = 'bg-green-600';
+                    if (percentage > 80) progressColor = 'bg-yellow-500';
+                    if (percentage > 95) progressColor = 'bg-red-500';
+                    
+                    budgetItem.innerHTML = `
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-medium">${getCategoryName(budget.category)}</h4>
+                                <div class="text-right">
+                                    <span class="text-gray-600 font-medium">${formatRupiah(budget.amount)}</span>
+                                    ${budget.note ? `<div class="text-xs text-gray-500">${budget.note}</div>` : ''}
+                                </div>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-1">
+                                <div class="${progressColor} h-2.5 rounded-full" style="width: ${percentage}%"></div>
+                            </div>
+                            <div class="flex justify-between text-xs text-gray-500">
+                                <span>Terpakai: ${formatRupiah(usage)} (${percentage}%)</span>
+                                <span>Sisa: ${formatRupiah(remaining)}</span>
+                            </div>
+                            <div class="flex justify-end mt-2">
+                                <button onclick="editBudget(${budget.id})" class="text-blue-500 hover:text-blue-700 mr-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                    </svg>
+                                </button>
+                                <button onclick="deleteBudget(${budget.id})" class="text-red-500 hover:text-red-700">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    budgetList.appendChild(budgetItem);
+                });
+            }
+            
+            // Update budget summary
+            const budgetSummary = document.getElementById('budget-summary');
+            budgetSummary.innerHTML = '';
+            
+            if (filteredBudgets.length === 0) {
+                budgetSummary.innerHTML = '<div class="p-4 text-center text-gray-500">Belum ada budget yang dibuat</div>';
+            } else {
+                // Group budgets by category type
+                const categoryGroups = {
+                    'Kebutuhan': ['daycare', 'food_groceries', 'diapers', 'milk', 'water_electrics', 'internet', 'cell_services', 'iuran_rutin'],
+                    'Transportasi': ['gas_ad', 'gas_an', 'gas_mobil', 'perawatan_kendaraan'],
+                    'Personal': ['snack_ad', 'snack_an', 'personal_care', 'pakaian', 'laundry', 'medicine'],
+                    'Rumah': ['homecare', 'sewa_garasi', 'groceries'],
+                    'Lainnya': ['ayah', 'save_emergency', 'cc_bill', 'hiburan', 'kondangan', 'cicilan', 'other', 'other_expense']
+                };
+                
+                // Calculate total budget and total by group
+                let totalBudget = 0;
+                const groupTotals = {};
+                
+                Object.keys(categoryGroups).forEach(group => {
+                    groupTotals[group] = {
+                        budget: 0,
+                        usage: 0
+                    };
+                });
+                
+                filteredBudgets.forEach(budget => {
+                    totalBudget += budget.amount;
+                    
+                    // Find which group this category belongs to
+                    for (const [group, categories] of Object.entries(categoryGroups)) {
+                        if (categories.includes(budget.category)) {
+                            groupTotals[group].budget += budget.amount;
+                            groupTotals[group].usage += calculateBudgetUsage(budget.category, month, year);
+                            break;
+                        }
+                    }
+                });
+                
+                // Update total budget display
+                document.getElementById('total-budget').textContent = formatRupiah(totalBudget);
+                
+                // Create summary cards for each group
+                Object.keys(groupTotals).forEach(group => {
+                    if (groupTotals[group].budget > 0) {
+                        const percentage = Math.min(Math.round((groupTotals[group].usage / groupTotals[group].budget) * 100), 100);
+                        const remaining = groupTotals[group].budget - groupTotals[group].usage;
+                        
+                        // Determine progress bar color based on usage percentage
+                        let progressColor = 'bg-green-600';
+                        if (percentage > 80) progressColor = 'bg-yellow-500';
+                        if (percentage > 95) progressColor = 'bg-red-500';
+                        
+                        const groupCard = document.createElement('div');
+                        groupCard.className = 'bg-white rounded-lg border border-gray-200 p-4';
+                        
+                        groupCard.innerHTML = `
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-medium">${group}</h4>
+                                <span class="text-gray-600">${formatRupiah(groupTotals[group].budget)}</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-1">
+                                <div class="${progressColor} h-2.5 rounded-full" style="width: ${percentage}%"></div>
+                            </div>
+                            <div class="flex justify-between text-xs text-gray-500">
+                                <span>Terpakai: ${formatRupiah(groupTotals[group].usage)} (${percentage}%)</span>
+                                <span>Sisa: ${formatRupiah(remaining)}</span>
+                            </div>
+                        `;
+                        
+                        budgetSummary.appendChild(groupCard);
+                    }
+                });
+            }
+        }
+        
+        // Update Realization UI
+        function updateRealizationUI() {
+            const month = parseInt(document.getElementById('realization-filter-month').value);
+            const year = parseInt(document.getElementById('realization-filter-year').value);
+            
+            // Filter budgets for selected month and year
+            const filteredBudgets = financeData.budgets.filter(b => 
+                b.month === month && b.year === year
+            );
+            
+            // Calculate total budget and expenses
+            let totalBudget = 0;
+            let totalExpense = 0;
+            
+            filteredBudgets.forEach(budget => {
+                totalBudget += budget.amount;
+                totalExpense += calculateBudgetUsage(budget.category, month, year);
+            });
+            
+            const remainingBudget = totalBudget - totalExpense;
+            
+            // Update summary cards
+            document.getElementById('realization-total-budget').textContent = formatRupiah(totalBudget);
+            document.getElementById('realization-total-expense').textContent = formatRupiah(totalExpense);
+            document.getElementById('realization-remaining').textContent = formatRupiah(remainingBudget);
+            
+            // Update realization list
+            const realizationList = document.getElementById('realization-list');
+            realizationList.innerHTML = '';
+            
+            if (filteredBudgets.length === 0) {
+                realizationList.innerHTML = '<div class="p-4 text-center text-gray-500">Belum ada budget untuk periode ini</div>';
+            } else {
+                filteredBudgets.forEach(budget => {
+                    const usage = calculateBudgetUsage(budget.category, month, year);
+                    const percentage = budget.amount > 0 ? Math.min(Math.round((usage / budget.amount) * 100), 100) : 0;
+                    const remaining = budget.amount - usage;
+                    
+                    // Get transactions for this category
+                    const categoryTransactions = financeData.transactions.filter(t => 
+                        t.category === budget.category && 
+                        t.type === 'expense' &&
+                        new Date(t.date).getMonth() + 1 === month &&
+                        new Date(t.date).getFullYear() === year
+                    );
+                    
+                    // Determine status color
+                    let statusColor = 'text-green-600';
+                    let statusText = 'Dalam Budget';
+                    
+                    if (percentage > 90 && percentage < 100) {
+                        statusColor = 'text-yellow-600';
+                        statusText = 'Hampir Habis';
+                    } else if (percentage >= 100) {
+                        statusColor = 'text-red-600';
+                        statusText = 'Melebihi Budget';
+                    }
+                    
+                    const realizationItem = document.createElement('div');
+                    realizationItem.className = 'bg-white rounded-lg border border-gray-200 p-4';
+                    
+                    realizationItem.innerHTML = `
+                        <div class="flex justify-between items-center mb-2">
+                            <h4 class="font-medium">${getCategoryName(budget.category)}</h4>
+                            <span class="${statusColor} font-medium">${statusText}</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 mb-2">
+                            <div>
+                                <div class="text-sm text-gray-500">Budget</div>
+                                <div class="font-medium">${formatRupiah(budget.amount)}</div>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-500">Terpakai</div>
+                                <div class="font-medium">${formatRupiah(usage)} (${percentage}%)</div>
+                            </div>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5 mb-4">
+                            <div class="${percentage > 95 ? 'bg-red-500' : percentage > 80 ? 'bg-yellow-500' : 'bg-green-600'} h-2.5 rounded-full" style="width: ${percentage}%"></div>
+                        </div>
+                        
+                        ${categoryTransactions.length > 0 ? `
+                            <div class="mt-2">
+                                <h5 class="text-sm font-medium text-gray-700 mb-2">Transaksi Terkait:</h5>
+                                <div class="max-h-40 overflow-y-auto">
+                                    ${categoryTransactions.map(t => `
+                                        <div class="flex justify-between items-center py-1 text-sm">
+                                            <div>${t.name}</div>
+                                            <div class="text-red-600">${formatRupiah(t.amount)}</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        ` : ''}
+                    `;
+                    
+                    realizationList.appendChild(realizationItem);
+                });
+            }
+            
+            // Simple chart visualization
+            const chartContainer = document.getElementById('realization-chart');
+            
+            if (filteredBudgets.length === 0) {
+                chartContainer.innerHTML = '<p class="text-gray-500">Tidak ada data untuk ditampilkan</p>';
+            } else {
+                chartContainer.innerHTML = `
+                    <div class="w-full">
+                        <div class="flex justify-between items-end mb-2">
+				<div class="text-sm text-gray-500">Budget vs Realisasi</div>
+                            <div class="text-sm text-gray-500">${formatRupiah(totalBudget)} vs ${formatRupiah(totalExpense)}</div>
+                        </div>
+                        <div class="relative pt-1">
+                            <div class="flex mb-2 items-center justify-between">
+                                <div>
+                                    <span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-green-600 bg-green-200">
+                                        Budget
+                                    </span>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-xs font-semibold inline-block text-green-600">
+                                        100%
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="overflow-hidden h-6 mb-4 text-xs flex rounded bg-green-200">
+                                <div style="width:100%" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-green-500">
+                                </div>
+                            </div>
+                            <div class="flex mb-2 items-center justify-between">
+                                <div>
+                                    <span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-blue-600 bg-blue-200">
+                                        Realisasi
+                                    </span>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-xs font-semibold inline-block text-blue-600">
+                                        ${totalBudget > 0 ? Math.round((totalExpense / totalBudget) * 100) : 0}%
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="overflow-hidden h-6 mb-4 text-xs flex rounded bg-blue-200">
+                                <div style="width:${totalBudget > 0 ? Math.min((totalExpense / totalBudget) * 100, 100) : 0}%" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Calculate budget usage for a specific category in a month
+        function calculateBudgetUsage(category, month, year) {
+            return financeData.transactions
+                .filter(t => 
+                    t.category === category && 
+                    t.type === 'expense' && 
+                    new Date(t.date).getMonth() + 1 === month &&
+                    new Date(t.date).getFullYear() === year
+                )
+                .reduce((sum, t) => sum + t.amount, 0);
+        }
+        
+        // Get category name
+        function getCategoryName(category) {
+            const categories = {
+                // Pendapatan
+                'gaji_addo': 'Gaji Addo',
+                'gaji_anne': 'Gaji Anne',
+                'bonus_addo': 'Bonus Addo',
+                'bonus_anne': 'Bonus Anne',
+                'thr_addo': 'THR Addo',
+                'thr_anne': 'THR Anne',
+                'other_revenue': 'Other Revenue',
+                
+                // Kebutuhan
+                'daycare': 'Daycare',
+                'food_groceries': 'Food & Groceries',
+                'diapers': 'Diapers',
+                'milk': 'Milk',
+                'water_electrics': 'Water & Electrics',
+                'internet': 'Internet',
+                'cell_services': 'Cell Services',
+                'iuran_rutin': 'Iuran Rutin',
+                
+                // Transportasi
+                'gas_ad': 'Gas Ad',
+                'gas_an': 'Gas An',
+                'gas_mobil': 'Gas Mobil',
+                'perawatan_kendaraan': 'Perawatan Kendaraan',
+                
+                // Personal
+                'snack_ad': 'Snack Ad',
+                'snack_an': 'Snack An',
+                'personal_care': 'Personal Care',
+                'pakaian': 'Pakaian',
+                'laundry': 'Laundry',
+                'medicine': 'Medicine',
+                
+                // Rumah
+                'homecare': 'Homecare',
+                'sewa_garasi': 'Sewa Garasi',
+                'groceries': 'Groceries',
+                
+                // Lainnya
+                'ayah': 'Ayah',
+                'save_emergency': 'Save for Emergency',
+                'cc_bill': 'CC Bill',
+                'hiburan': 'Hiburan',
+                'kondangan': 'Kondangan',
+                'cicilan': 'Cicilan',
+                'other': 'Other Will',
+                'other_expense': 'Other Expense'
+            };
+            
+            return categories[category] || category;
+        }
+        
+        // Get wallet name
+        function getWalletName(wallet) {
+            const wallets = {
+                'aldric': 'Aldric',
+                'kas_ado': 'Kas Ado',
+                'kas_ane': 'Kas Ane',
+                'bca': 'BCA',
+                'livin': 'Livin Mandiri',
+                'jatim': 'Bank Jatim',
+                'seabank': 'Seabank',
+                'jago': 'Jago',
+                'celengan': 'Celengan',
+                'saving': 'Saving',
+                'ksi': 'KSI',
+                'blu': 'Blu',
+                'kur': 'KUR',
+                'other': 'Other',
+                'bankmas': 'BankMas'
+            };
+            
+            return wallets[wallet] || wallet;
+        }
+        
+        // Form validation functions
+        function validateForm(formId) {
+            const form = document.getElementById(formId);
+            let isValid = true;
+            
+            // Reset all error messages
+            form.querySelectorAll('.error-message').forEach(el => {
+                el.textContent = '';
+            });
+            
+            // Validate each required field
+            form.querySelectorAll('[required]').forEach(field => {
+                if (!field.value) {
+                    const errorEl = document.getElementById(`${field.id}-error`);
+                    if (errorEl) {
+                        errorEl.textContent = 'Field ini harus diisi';
+                    }
+                    isValid = false;
+                }
+                
+                // Additional validation for number fields
+                if (field.type === 'number' && field.value) {
+                    const value = parseFloat(field.value);
+                    if (value <= 0) {
+                        const errorEl = document.getElementById(`${field.id}-error`);
+                        if (errorEl) {
+                            errorEl.textContent = 'Nilai harus lebih besar dari 0';
+                        }
+                        isValid = false;
+                    }
+                }
+            });
+            
+            return isValid;
+        }
+        
+        // Filter categories based on transaction type
+        document.getElementById('transaction-type').addEventListener('change', function() {
+            const type = this.value;
+            const categorySelect = document.getElementById('transaction-category');
+            
+            // Reset selection
+            categorySelect.selectedIndex = 0;
+            
+            // Get all option groups
+            const optgroups = categorySelect.querySelectorAll('optgroup');
+            
+            // Show/hide appropriate categories
+            optgroups.forEach(group => {
+                if (type === 'income') {
+                    // Show income categories, hide expense categories
+                    if (group.label === 'Pendapatan') {
+                        group.style.display = '';
+                    } else {
+                        group.style.display = 'none';
+                    }
+                } else if (type === 'expense') {
+                    // Show expense categories, hide income categories
+                    if (group.label === 'Pendapatan') {
+                        group.style.display = 'none';
+                    } else {
+                        group.style.display = '';
+                    }
+                }
+            });
+        });
+        
+        // Handle transaction form submission
+        transactionForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!validateForm('transaction-form')) {
+                return;
+            }
+            
+            const name = document.getElementById('transaction-name').value;
+            const amount = parseFloat(document.getElementById('transaction-amount').value);
+            const type = document.getElementById('transaction-type').value;
+            const date = document.getElementById('transaction-date').value;
+            const category = document.getElementById('transaction-category').value;
+            const wallet = document.getElementById('transaction-wallet').value;
+            
+            const transaction = {
+                id: Date.now(),
+                name,
+                amount,
+                type,
+                date,
+                category,
+                wallet
+            };
+            
+            financeData.transactions.push(transaction);
+            
+            // Update specific wallet balance
+            if (!financeData.wallets[wallet]) {
+                financeData.wallets[wallet] = 0;
+            }
+            
+            if (type === 'income') {
+                financeData.wallets[wallet] += amount;
+                financeData.wallet += amount;
+            } else {
+                financeData.wallets[wallet] -= amount;
+                financeData.wallet -= amount;
+            }
+            
+            saveData();
+            updateUI();
+            
+            this.reset();
+            document.getElementById('transaction-date').value = new Date().toISOString().split('T')[0];
+            
+            alert('Transaksi berhasil dicatat!');
+        });
+        
+        // Handle wallet transfer form submission
+        if (walletTransferForm) {
+            walletTransferForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                if (!validateForm('wallet-transfer-form')) {
+                    return;
+                }
+                
+                const from = document.getElementById('wallet-transfer-from').value;
+                const to = document.getElementById('wallet-transfer-to').value;
+                const amount = parseFloat(document.getElementById('wallet-transfer-amount').value);
+                const note = document.getElementById('wallet-transfer-note').value;
+                
+                // Check if source wallet has enough balance
+                if (!financeData.wallets[from] || financeData.wallets[from] < amount) {
+                    document.getElementById('wallet-transfer-amount-error').textContent = 'Saldo dompet tidak cukup!';
+                    return;
+                }
+                
+                if (from === to) {
+                    document.getElementById('wallet-transfer-to-error').textContent = 'Tidak bisa transfer ke dompet yang sama!';
+                    return;
+                }
+                
+                // Deduct from source wallet
+                financeData.wallets[from] -= amount;
+                
+                // Add to destination wallet
+                if (!financeData.wallets[to]) {
+                    financeData.wallets[to] = 0;
+                }
+                financeData.wallets[to] += amount;
+                
+                const transfer = {
+                    id: Date.now(),
+                    from,
+                    to,
+                    amount,
+                    note,
+                    date: new Date().toISOString()
+                };
+                
+                if (!financeData.walletTransfers) {
+                    financeData.walletTransfers = [];
+                }
+                
+                financeData.walletTransfers.push(transfer);
+                
+                saveData();
+                updateUI();
+                
+                this.reset();
+                alert('Transfer antar dompet berhasil!');
+            });
+        }
+        
+        // Handle budget form submission
+        budgetForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!validateForm('budget-form')) {
+                return;
+            }
+            
+            const category = document.getElementById('budget-category').value;
+            const amount = parseFloat(document.getElementById('budget-amount').value);
+            const month = parseInt(document.getElementById('budget-month').value);
+            const year = parseInt(document.getElementById('budget-year').value);
+            const note = document.getElementById('budget-note').value;
+            
+            // Check if budget for this category already exists in the selected month/year
+            const existingBudget = financeData.budgets.find(b => 
+                b.category === category && b.month === month && b.year === year
+            );
+            
+            if (existingBudget) {
+                document.getElementById('budget-category-error').textContent = 'Budget untuk kategori ini sudah ada di bulan yang sama';
+                return;
+            }
+            
+            const budget = {
+                id: Date.now(),
+                category,
+                amount,
+                month,
+                year,
+                note,
+                date: new Date().toISOString()
+            };
+            
+            financeData.budgets.push(budget);
+            
+            saveData();
+            updateBudgetUI();
+            
+            this.reset();
+            
+            // Reset to current month and year
+            const { month: currentMonth, year: currentYear } = getCurrentMonthYear();
+            document.getElementById('budget-month').value = currentMonth;
+            document.getElementById('budget-year').value = currentYear;
+            
+            alert('Budget berhasil disimpan!');
+        });
+        
+        // Handle month filter for transactions
+        if (filterMonth) {
+            filterMonth.addEventListener('change', function() {
+                updateTransactionList(this.value, filterType ? filterType.value : 'all');
+            });
+        }
+        
+        // Handle type filter for transactions
+        if (filterType) {
+            filterType.addEventListener('change', function() {
+                updateTransactionList(filterMonth ? filterMonth.value : 'all', this.value);
+            });
+        }
+        
+        // Handle month/year filter for budget
+        document.getElementById('budget-filter-month').addEventListener('change', updateBudgetUI);
+        document.getElementById('budget-filter-year').addEventListener('change', updateBudgetUI);
+        
+        // Handle month/year filter for realization
+        document.getElementById('realization-filter-month').addEventListener('change', updateRealizationUI);
+        document.getElementById('realization-filter-year').addEventListener('change', updateRealizationUI);
+        
+        // Edit transaction function
+        window.editTransaction = function(id) {
+            try {
+                const transaction = financeData.transactions.find(t => t.id === id);
+                if (!transaction) {
+                    alert('Transaksi tidak ditemukan');
+                    return;
+                }
+                
+                // Revert the wallet balance
+                if (transaction.type === 'income') {
+                    financeData.wallet -= transaction.amount;
+                    financeData.wallets[transaction.wallet] -= transaction.amount;
+                } else {
+                    financeData.wallet += transaction.amount;
+                    financeData.wallets[transaction.wallet] += transaction.amount;
+                }
+                
+                // Fill the form with transaction data
+                document.getElementById('transaction-name').value = transaction.name;
+                document.getElementById('transaction-amount').value = transaction.amount;
+                document.getElementById('transaction-type').value = transaction.type;
+                
+                // Trigger the type change event to filter categories
+                const typeSelect = document.getElementById('transaction-type');
+                const event = new Event('change');
+                typeSelect.dispatchEvent(event);
+                
+                // Set a small timeout to ensure the category options are updated before setting the value
+                setTimeout(() => {
+                    document.getElementById('transaction-date').value = transaction.date;
+                    document.getElementById('transaction-category').value = transaction.category;
+                    document.getElementById('transaction-wallet').value = transaction.wallet;
+                    
+                    // Remove the transaction
+                    financeData.transactions = financeData.transactions.filter(t => t.id !== id);
+                    
+                    saveData();
+                    updateUI();
+                    
+                    // Focus on the form
+                    document.getElementById('transaction-name').focus();
+                }, 100);
+            } catch (error) {
+                console.error("Error editing transaction:", error);
+                alert('Terjadi kesalahan saat mengedit transaksi');
+            }
+        };
+        
+        // Delete transaction function
+        window.deleteTransaction = function(id) {
+            try {
+                if (!confirm('Apakah Anda yakin ingin menghapus transaksi ini?')) return;
+                
+                const transaction = financeData.transactions.find(t => t.id === id);
+                if (!transaction) {
+                    alert('Transaksi tidak ditemukan');
+                    return;
+                }
+                
+                // Revert the wallet balance
+                if (transaction.type === 'income') {
+                    financeData.wallet -= transaction.amount;
+                    financeData.wallets[transaction.wallet] -= transaction.amount;
+                } else {
+                    financeData.wallet += transaction.amount;
+                    financeData.wallets[transaction.wallet] += transaction.amount;
+                }
+                
+                // Remove the transaction
+                financeData.transactions = financeData.transactions.filter(t => t.id !== id);
+                
+                saveData();
+                updateUI();
+                
+                alert('Transaksi berhasil dihapus');
+            } catch (error) {
+                console.error("Error deleting transaction:", error);
+                alert('Terjadi kesalahan saat menghapus transaksi');
+            }
+        };
+        
+        // Edit budget function
+        window.editBudget = function(id) {
+            try {
+                const budget = financeData.budgets.find(b => b.id === id);
+                if (!budget) {
+                    alert('Budget tidak ditemukan');
+                    return;
+                }
+                
+                // Fill the form with budget data
+                document.getElementById('budget-category').value = budget.category;
+                document.getElementById('budget-amount').value = budget.amount;
+                document.getElementById('budget-month').value = budget.month;
+                document.getElementById('budget-year').value = budget.year;
+                document.getElementById('budget-note').value = budget.note || '';
+                
+                // Remove the budget
+                financeData.budgets = financeData.budgets.filter(b => b.id !== id);
+                
+                saveData();
+                updateBudgetUI();
+                
+                // Focus on the form
+                document.getElementById('budget-category').focus();
+            } catch (error) {
+                console.error("Error editing budget:", error);
+                alert('Terjadi kesalahan saat mengedit budget');
+            }
+        };
+        
+        // Delete budget function
+        window.deleteBudget = function(id) {
+            try {
+                if (!confirm('Apakah Anda yakin ingin menghapus budget ini?')) return;
+                
+                // Remove the budget
+                financeData.budgets = financeData.budgets.filter(b => b.id !== id);
+                
+                saveData();
+                updateBudgetUI();
+                
+                alert('Budget berhasil dihapus');
+            } catch (error) {
+                console.error("Error deleting budget:", error);
+                alert('Terjadi kesalahan saat menghapus budget');
+            }
+        };
+        
+        // Export data function
+        document.getElementById('export-data').addEventListener('click', function() {
+            const dataStr = JSON.stringify(financeData, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = `finance_data_backup_${new Date().toISOString().slice(0, 10)}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+        });
+        
+        // Import data function
+        document.getElementById('import-file').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+                    
+                    // Validate imported data structure
+                    if (!importedData.wallet || !Array.isArray(importedData.transactions)) {
+                        throw new Error('Format data tidak valid');
+                    }
+                    
+                    if (confirm('Apakah Anda yakin ingin mengimpor data ini? Data saat ini akan diganti.')) {
+                        financeData = importedData;
+                        
+                        // Ensure all required fields exist
+                        if (!financeData.budgets) financeData.budgets = [];
+                        if (!financeData.walletTransfers) financeData.walletTransfers = [];
+                        if (!financeData.version) financeData.version = "1.3.0";
+                        
+                        // Initialize wallets if they don't exist
+                        if (!financeData.wallets) {
+                            financeData.wallets = {
+                                aldric: 0,
+                                kas_ado: 0,
+                                kas_ane: 0,
+                                bca: 0,
+                                livin: 0,
+                                jatim: 0,
+                                seabank: 0,
+                                jago: 0,
+                                celengan: 0,
+                                saving: 0,
+                                ksi: 0,
+                                blu: 0,
+                                kur: 0,
+                                other: 0,
+                                bankmas: 0
+                            };
+                            
+                            // Distribute existing wallet balance to 'other' wallet
+                            if (financeData.wallet > 0) {
+                                financeData.wallets.other = financeData.wallet;
+                            }
+                        }
+                        
+                        // Convert old transaction types to new format if needed
+                        if (financeData.transactions && financeData.transactions.length > 0) {
+                            financeData.transactions = financeData.transactions.map(t => {
+                                // If using old type format (gaji_*, bonus_*, thr_*, other_revenue)
+                                if (t.type && (t.type.includes('gaji_') || t.type.includes('bonus_') || 
+                                    t.type.includes('thr_') || t.type === 'other_revenue')) {
+                                    return {
+                                        ...t,
+                                        type: 'income'
+                                    };
+                                }
+                                return t;
+                            });
+                        }
+                        
+                        saveData();
+                        updateUI();
+                        alert('Data berhasil diimpor!');
+                    }
+                } catch (error) {
+                    alert('Gagal mengimpor data: ' + error.message);
+                }
+            };
+            reader.readAsText(file);
+        });
+        
+        // Reset data function
+        document.getElementById('reset-data').addEventListener('click', function() {
+            if (confirm('PERHATIAN: Semua data keuangan Anda akan dihapus. Tindakan ini tidak dapat dibatalkan. Lanjutkan?')) {
+                if (confirm('Apakah Anda benar-benar yakin? Semua data akan hilang.')) {
+                    financeData = {
+                        wallet: 0,
+                        wallets: {
+                            aldric: 0,
+                            kas_ado: 0,
+                            kas_ane: 0,
+                            bca: 0,
+                            livin: 0,
+                            jatim: 0,
+                            seabank: 0,
+                            jago: 0,
+                            celengan: 0,
+                            saving: 0,
+                            ksi: 0,
+                            blu: 0,
+                            kur: 0,
+                            other: 0,
+                            bankmas: 0
+                        },
+                        transactions: [],
+                        walletTransfers: [],
+                        budgets: [],
+                        version: "1.3.0"
+                    };
+                    
+                    saveData();
+                    updateUI();
+                    alert('Semua data telah direset!');
+                }
+            }
+        });
+        
+        // Initialize app
+        window.addEventListener('DOMContentLoaded', function() {
+            try {
+                // Set today's date as default
+                const dateInput = document.getElementById('transaction-date');
+                if (dateInput) {
+                    dateInput.value = new Date().toISOString().split('T')[0];
+                }
+                
+                // Initialize transaction type change handler
+                const transactionType = document.getElementById('transaction-type');
+                if (transactionType) {
+                    // Trigger the change event once to set up initial state
+                    const event = new Event('change');
+                    transactionType.dispatchEvent(event);
+                }
+                
+                // Load data
+                loadData();
+                
+                // Set current month and year in filters
+                const { month, year } = getCurrentMonthYear();
+                
+                if (filterMonth) {
+                    filterMonth.value = month;
+                }
+                
+                // Initialize budget filter month/year
+                if (document.getElementById('budget-filter-month')) {
+                    document.getElementById('budget-filter-month').value = month;
+                }
+                
+                if (document.getElementById('budget-filter-year')) {
+                    document.getElementById('budget-filter-year').value = year;
+                }
+                
+                // Initialize realization filter month/year
+                if (document.getElementById('realization-filter-month')) {
+                    document.getElementById('realization-filter-month').value = month;
+                }
+                
+                if (document.getElementById('realization-filter-year')) {
+                    document.getElementById('realization-filter-year').value = year;
+                }
+                
+                // Set budget year
+                if (document.getElementById('budget-year')) {
+                    document.getElementById('budget-year').value = year;
+                }
+                
+                // Set budget month
+                if (document.getElementById('budget-month')) {
+                    document.getElementById('budget-month').value = month;
+                }
+                
+                // Update UI once to make sure everything is displayed correctly
+                updateUI();
+            } catch (error) {
+                console.error("Error initializing app:", error);
+            }
+        });
+	// Edit wallet transfer function
+window.editWalletTransfer = function(id) {
+    try {
+        const transfer = financeData.walletTransfers.find(t => t.id === id);
+        if (!transfer) {
+            alert('Transfer tidak ditemukan');
+            return;
+        }
+        
+        // Revert the wallet balances
+        financeData.wallets[transfer.from] += transfer.amount;
+        financeData.wallets[transfer.to] -= transfer.amount;
+        
+        // Fill the form with transfer data
+        document.getElementById('wallet-transfer-from').value = transfer.from;
+        document.getElementById('wallet-transfer-to').value = transfer.to;
+        document.getElementById('wallet-transfer-amount').value = transfer.amount;
+        document.getElementById('wallet-transfer-note').value = transfer.note || '';
+        
+        // Remove the transfer
+        financeData.walletTransfers = financeData.walletTransfers.filter(t => t.id !== id);
+        
+        saveData();
+        updateUI();
+        
+        // Focus on the form
+        document.getElementById('wallet-transfer-amount').focus();
+    } catch (error) {
+        console.error("Error editing wallet transfer:", error);
+        alert('Terjadi kesalahan saat mengedit transfer');
+    }
+};
+
+// Delete wallet transfer function
+window.deleteWalletTransfer = function(id) {
+    try {
+        if (!confirm('Apakah Anda yakin ingin menghapus transfer ini?')) return;
+        
+        const transfer = financeData.walletTransfers.find(t => t.id === id);
+        if (!transfer) {
+            alert('Transfer tidak ditemukan');
+            return;
+        }
+        
+        // Revert the wallet balances
+        financeData.wallets[transfer.from] += transfer.amount;
+        financeData.wallets[transfer.to] -= transfer.amount;
+        
+        // Remove the transfer
+        financeData.walletTransfers = financeData.walletTransfers.filter(t => t.id !== id);
+        
+        saveData();
+        updateUI();
+        
+        alert('Transfer berhasil dihapus');
+    } catch (error) {
+        console.error("Error deleting wallet transfer:", error);
+        alert('Terjadi kesalahan saat menghapus transfer');
+    }
+};
+
+    </script>
+</body>
+</html>
