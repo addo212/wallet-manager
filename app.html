@@ -1716,56 +1716,61 @@ function updateTransactionList(filterMonth = 'all', filterType = 'all') {
         if (walletTransferForm) {
             walletTransferForm.addEventListener('submit', function(e) {
                 e.preventDefault();
-                
-                if (!validateForm('wallet-transfer-form')) {
-                    return;
-                }
-                
-                const from = document.getElementById('wallet-transfer-from').value;
-                const to = document.getElementById('wallet-transfer-to').value;
-                const amount = parseFloat(document.getElementById('wallet-transfer-amount').value);
-                const note = document.getElementById('wallet-transfer-note').value;
-                
-                // Check if source wallet has enough balance
-                if (!financeData.wallets[from] || financeData.wallets[from] < amount) {
-                    document.getElementById('wallet-transfer-amount-error').textContent = 'Saldo dompet tidak cukup!';
-                    return;
-                }
-                
-                if (from === to) {
-                    document.getElementById('wallet-transfer-to-error').textContent = 'Tidak bisa transfer ke dompet yang sama!';
-                    return;
-                }
-                
-                // Deduct from source wallet
-                financeData.wallets[from] -= amount;
-                
-                // Add to destination wallet
-                if (!financeData.wallets[to]) {
-                    financeData.wallets[to] = 0;
-                }
-                financeData.wallets[to] += amount;
-                
-                const transfer = {
-                    id: Date.now(),
-                    from,
-                    to,
-                    amount,
-                    note,
-                    date: new Date().toISOString()
-                };
-                
-                if (!financeData.walletTransfers) {
-                    financeData.walletTransfers = [];
-                }
-                
-                financeData.walletTransfers.push(transfer);
-                
-                saveData();
-                updateUI();
-                
-                this.reset();
-                alert('Transfer antar dompet berhasil!');
+        
+        if (!validateForm('wallet-transfer-form')) {
+            return;
+        }
+        
+        const from = document.getElementById('wallet-transfer-from').value;
+        const to = document.getElementById('wallet-transfer-to').value;
+        const amount = parseFloat(document.getElementById('wallet-transfer-amount').value);
+        const note = document.getElementById('wallet-transfer-note').value;
+        // BARU: Ambil tanggal yang dipilih
+        const transferDate = document.getElementById('wallet-transfer-date').value;
+        
+        // Check if source wallet has enough balance
+        if (!financeData.wallets[from] || financeData.wallets[from] < amount) {
+            document.getElementById('wallet-transfer-amount-error').textContent = 'Saldo dompet tidak cukup!';
+            return;
+        }
+        
+        if (from === to) {
+            document.getElementById('wallet-transfer-to-error').textContent = 'Tidak bisa transfer ke dompet yang sama!';
+            return;
+        }
+        
+        // Deduct from source wallet
+        financeData.wallets[from] -= amount;
+        
+        // Add to destination wallet
+        if (!financeData.wallets[to]) {
+            financeData.wallets[to] = 0;
+        }
+        financeData.wallets[to] += amount;
+        
+        const transfer = {
+            id: Date.now(),
+            from,
+            to,
+            amount,
+            note,
+            // BARU: Gunakan tanggal yang dipilih
+            date: new Date(transferDate).toISOString()
+        };
+        
+        if (!financeData.walletTransfers) {
+            financeData.walletTransfers = [];
+        }
+        
+        financeData.walletTransfers.push(transfer);
+        
+        saveData();
+        updateUI();
+        
+        this.reset();
+        // BARU: Set tanggal kembali ke hari ini setelah form direset
+        document.getElementById('wallet-transfer-date').value = new Date().toISOString().split('T')[0];
+        alert('Transfer antar dompet berhasil!');
             });
         }
         
