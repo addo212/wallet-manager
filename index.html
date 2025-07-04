@@ -78,7 +78,7 @@ document.getElementById('login-form').addEventListener('submit', function(e) {
     // Check credentials
     if (username === 'addo' && password === 'suamianne') {
         // Set login status in sessionStorage (bukan localStorage)
-        sessionStorage.setItem('financeAppLoggedIn', 'true');
+        localStorage.setItem('financeAppLoggedIn', 'true');
         
         // Redirect to main app
         window.location.href = 'app.html';
@@ -93,7 +93,7 @@ document.getElementById('login-form').addEventListener('submit', function(e) {
 
 // Check if already logged in
 window.addEventListener('DOMContentLoaded', function() {
-    if (sessionStorage.getItem('financeAppLoggedIn') === 'true') {
+    if (localStorage.getItem('financeAppLoggedIn') === 'true') {
         window.location.href = 'app.html';
     }
 });
