@@ -264,9 +264,100 @@
                         </select>
                     </div>
                 </div>
+	<div class="flex gap-2 flex-wrap mt-2">
+    <div>
+        <label for="filter-date-start" class="block text-xs font-medium text-gray-700 mb-1">Dari Tanggal</label>
+        <input type="date" id="filter-date-start" class="px-3 py-1 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+    </div>
+    <div>
+        <label for="filter-date-end" class="block text-xs font-medium text-gray-700 mb-1">Sampai Tanggal</label>
+        <input type="date" id="filter-date-end" class="px-3 py-1 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+    </div>
+    <div>
+        <label for="filter-category" class="block text-xs font-medium text-gray-700 mb-1">Kategori</label>
+        <select id="filter-category" class="px-3 py-1 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+            <option value="all">Semua Kategori</option>
+            <optgroup label="Pendapatan">
+                <option value="gaji_addo">Gaji Addo</option>
+                <option value="gaji_anne">Gaji Anne</option>
+                <option value="bonus_addo">Bonus Addo</option>
+                <option value="bonus_anne">Bonus Anne</option>
+                <option value="thr_addo">THR Addo</option>
+                <option value="thr_anne">THR Anne</option>
+                <option value="other_revenue">Other Revenue</option>
+            </optgroup>
+            <optgroup label="Kebutuhan">
+                <option value="daycare">Daycare</option>
+                <option value="food_groceries">Food & Food Groceries</option>
+                <option value="diapers">Diapers</option>
+                <option value="milk">Milk</option>
+                <option value="water_electrics">Water & Electrics</option>
+                <option value="internet">Internet</option>
+                <option value="cell_services">Cell Services</option>
+                <option value="iuran_rutin">Iuran Rutin</option>
+            </optgroup>
+            <optgroup label="Transportasi">
+                <option value="gas_ad">Gas Ad</option>
+                <option value="gas_an">Gas An</option>
+                <option value="gas_mobil">Gas Mobil</option>
+                <option value="perawatan_kendaraan">Perawatan Kendaraan</option>
+            </optgroup>
+            <optgroup label="Personal">
+                <option value="snack_ad">Snack Ad</option>
+                <option value="snack_an">Snack An</option>
+                <option value="personal_care">Personal Care</option>
+                <option value="pakaian">Pakaian</option>
+                <option value="laundry">Laundry</option>
+                <option value="medicine">Medicine</option>
+            </optgroup>
+            <optgroup label="Rumah">
+                <option value="homecare">Homecare</option>
+                <option value="sewa_garasi">Sewa Garasi</option>
+                <option value="groceries">Groceries</option>
+            </optgroup>
+            <optgroup label="Lainnya">
+                <option value="ayah">Ayah</option>
+                <option value="save_emergency">Save for Emergency</option>
+                <option value="cc_bill">CC Bill</option>
+                <option value="hiburan">Hiburan - Wisata Dll</option>
+                <option value="kondangan">Kondangan, Iuran, Dll</option>
+                <option value="cicilan">Cicilan</option>
+                <option value="other">Other Will</option>
+                <option value="other_expense">Other Expense</option>
+            </optgroup>
+        </select>
+    </div>
+    <div class="self-end">
+        <button id="apply-filters" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md text-sm transition duration-150 ease-in-out">
+            Terapkan Filter
+        </button>
+    </div>
+</div>	
                 <div class="divide-y divide-gray-200">
                     <div id="transaction-list" class="divide-y divide-gray-200">
                         <!-- Transactions will be loaded here -->
+			    <div class="p-4 border-t border-gray-200">
+    <div class="flex items-center justify-between">
+        <div class="text-sm text-gray-700">
+            Menampilkan <span id="showing-start">0</span> - <span id="showing-end">0</span> dari <span id="total-transactions">0</span> transaksi
+        </div>
+        <div class="flex gap-2">
+            <select id="page-size" class="px-2 py-1 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                <option value="5">5 baris</option>
+                <option value="10" selected>10 baris</option>
+                <option value="25">25 baris</option>
+                <option value="50">50 baris</option>
+            </select>
+            <button id="prev-page" class="px-3 py-1 border border-gray-300 rounded-md text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                Sebelumnya
+            </button>
+            <span id="current-page" class="px-3 py-1 border border-gray-300 rounded-md text-sm bg-blue-50">1</span>
+            <button id="next-page" class="px-3 py-1 border border-gray-300 rounded-md text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                Berikutnya
+            </button>
+        </div>
+    </div>
+</div>
                         <div class="p-4 text-center text-gray-500">Belum ada transaksi</div>
                     </div>
                 </div>
@@ -625,7 +716,23 @@
         window.location.href = 'index.html';
     }
 });
+// Pagination variables
+let currentPage = 1;
+let pageSize = 10; // Default 10 baris per halaman
+let filteredTransactions = [];
 
+// DOM Elements for filters and pagination
+const filterDateStart = document.getElementById('filter-date-start');
+const filterDateEnd = document.getElementById('filter-date-end');
+const filterCategory = document.getElementById('filter-category');
+const applyFiltersBtn = document.getElementById('apply-filters');
+const prevPageBtn = document.getElementById('prev-page');
+const nextPageBtn = document.getElementById('next-page');
+const currentPageSpan = document.getElementById('current-page');
+const pageSizeSelect = document.getElementById('page-size');
+const showingStart = document.getElementById('showing-start');
+const showingEnd = document.getElementById('showing-end');
+const totalTransactions = document.getElementById('total-transactions');
       // Add logout function
      function logout() {
     sessionStorage.removeItem('financeAppLoggedIn');
@@ -878,66 +985,135 @@ window.addEventListener('beforeunload', function() {
             }
         }
         
-        // Update transaction list
-        function updateTransactionList(filterMonth = 'all', filterType = 'all') {
-            transactionList.innerHTML = '';
-            
-            let filteredTransactions = [...financeData.transactions];
-            
-            if (filterMonth !== 'all') {
-                filteredTransactions = filteredTransactions.filter(
-                    t => new Date(t.date).getMonth() + 1 === parseInt(filterMonth)
-                );
-            }
-            
-            if (filterType !== 'all') {
-                filteredTransactions = filteredTransactions.filter(t => t.type === filterType);
-            }
-            
-            if (filteredTransactions.length === 0) {
-                transactionList.innerHTML = '<div class="p-4 text-center text-gray-500">Tidak ada transaksi</div>';
-                return;
-            }
-            
-            filteredTransactions.sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(transaction => {
-                const transactionItem = document.createElement('div');
-                transactionItem.className = 'p-4 transaction-item hover:bg-gray-50';
-                
-                const isIncome = transaction.type === 'income';
-                const amountClass = isIncome ? 'text-green-600' : 'text-red-600';
-                const transactionDate = new Date(transaction.date).toLocaleDateString('id-ID');
-                
-                transactionItem.innerHTML = `
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <h4 class="font-medium">${transaction.name}</h4>
-                            <div class="flex items-center text-sm text-gray-500 mt-1">
-                                <span>${transactionDate}</span>
-                                <span class="mx-2">•</span>
-                                <span>${getCategoryName(transaction.category)}</span>
-                                <span class="mx-2">•</span>
-                                <span>${getWalletName(transaction.wallet)}</span>
-                            </div>
-                        </div>
-                        <span class="${amountClass} font-medium">${isIncome ? '+' : '-'}${formatRupiah(transaction.amount)}</span>
-                        <div class="flex space-x-2">
-                            <button onclick="editTransaction(${transaction.id})" class="text-blue-500 hover:text-blue-700">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                </svg>
-                            </button>
-                            <button onclick="deleteTransaction(${transaction.id})" class="text-red-500 hover:text-red-700">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                </svg>
-                            </button>
-                        </div>
+      // Update transaction list with filters and pagination
+function updateTransactionList(filterMonth = 'all', filterType = 'all') {
+    // Get filter values
+    const startDate = filterDateStart && filterDateStart.value ? new Date(filterDateStart.value) : null;
+    const endDate = filterDateEnd && filterDateEnd.value ? new Date(filterDateEnd.value) : null;
+    const category = filterCategory && filterCategory.value ? filterCategory.value : 'all';
+    
+    // Filter transactions
+    filteredTransactions = [...financeData.transactions];
+    
+    if (filterMonth !== 'all') {
+        filteredTransactions = filteredTransactions.filter(
+            t => new Date(t.date).getMonth() + 1 === parseInt(filterMonth)
+        );
+    }
+    
+    if (filterType !== 'all') {
+        filteredTransactions = filteredTransactions.filter(t => t.type === filterType);
+    }
+    
+    if (startDate) {
+        filteredTransactions = filteredTransactions.filter(
+            t => new Date(t.date) >= startDate
+        );
+    }
+    
+    if (endDate) {
+        // Add one day to include the end date fully
+        const adjustedEndDate = new Date(endDate);
+        adjustedEndDate.setDate(adjustedEndDate.getDate() + 1);
+        
+        filteredTransactions = filteredTransactions.filter(
+            t => new Date(t.date) < adjustedEndDate
+        );
+    }
+    
+    if (category !== 'all') {
+        filteredTransactions = filteredTransactions.filter(t => t.category === category);
+    }
+    
+    // Sort transactions by date (newest first)
+    filteredTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    // Update pagination info
+    const totalItems = filteredTransactions.length;
+    
+    if (totalTransactions) {
+        totalTransactions.textContent = totalItems;
+    }
+    
+    // Calculate pagination
+    const totalPages = Math.ceil(totalItems / pageSize);
+    
+    // Adjust current page if needed
+    if (currentPage > totalPages) {
+        currentPage = Math.max(1, totalPages);
+    }
+    
+    // Calculate start and end indices
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = Math.min(startIndex + pageSize, totalItems);
+    
+    // Update showing info
+    if (showingStart && showingEnd) {
+        showingStart.textContent = totalItems > 0 ? startIndex + 1 : 0;
+        showingEnd.textContent = endIndex;
+    }
+    
+    if (currentPageSpan) {
+        currentPageSpan.textContent = currentPage;
+    }
+    
+    // Enable/disable pagination buttons
+    if (prevPageBtn && nextPageBtn) {
+        prevPageBtn.disabled = currentPage <= 1;
+        nextPageBtn.disabled = currentPage >= totalPages;
+    }
+    
+    // Clear transaction list
+    transactionList.innerHTML = '';
+    
+    if (totalItems === 0) {
+        transactionList.innerHTML = '<div class="p-4 text-center text-gray-500">Tidak ada transaksi</div>';
+        return;
+    }
+    
+    // Get current page transactions
+    const currentTransactions = filteredTransactions.slice(startIndex, endIndex);
+    
+    // Render transactions
+    currentTransactions.forEach(transaction => {
+        const transactionItem = document.createElement('div');
+        transactionItem.className = 'p-4 transaction-item hover:bg-gray-50';
+        
+        const isIncome = transaction.type === 'income';
+        const amountClass = isIncome ? 'text-green-600' : 'text-red-600';
+        const transactionDate = new Date(transaction.date).toLocaleDateString('id-ID');
+        
+        transactionItem.innerHTML = `
+            <div class="flex justify-between items-center">
+                <div>
+                    <h4 class="font-medium">${transaction.name}</h4>
+                    <div class="flex items-center text-sm text-gray-500 mt-1">
+                        <span>${transactionDate}</span>
+                        <span class="mx-2">•</span>
+                        <span>${getCategoryName(transaction.category)}</span>
+                        <span class="mx-2">•</span>
+                        <span>${getWalletName(transaction.wallet)}</span>
                     </div>
-                `;
-                
-                transactionList.appendChild(transactionItem);
-            });
-        }
+                </div>
+                <span class="${amountClass} font-medium">${isIncome ? '+' : '-'}${formatRupiah(transaction.amount)}</span>
+                <div class="flex space-x-2">
+                    <button onclick="editTransaction(${transaction.id})" class="text-blue-500 hover:text-blue-700">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        </svg>
+                    </button>
+                    <button onclick="deleteTransaction(${transaction.id})" class="text-red-500 hover:text-red-700">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        transactionList.appendChild(transactionItem);
+    });
+}
         
         // Update wallet transfer history
         function updateWalletTransferHistory() {
@@ -1929,6 +2105,40 @@ window.addEventListener('beforeunload', function() {
                     const event = new Event('change');
                     transactionType.dispatchEvent(event);
                 }
+		// Handle pagination and filter events
+if (applyFiltersBtn) {
+    applyFiltersBtn.addEventListener('click', function() {
+        currentPage = 1; // Reset to first page when applying filters
+        updateTransactionList(filterMonth ? filterMonth.value : 'all', filterType ? filterType.value : 'all');
+    });
+}
+
+if (prevPageBtn) {
+    prevPageBtn.addEventListener('click', function() {
+        if (currentPage > 1) {
+            currentPage--;
+            updateTransactionList(filterMonth ? filterMonth.value : 'all', filterType ? filterType.value : 'all');
+        }
+    });
+}
+
+if (nextPageBtn) {
+    nextPageBtn.addEventListener('click', function() {
+        const totalPages = Math.ceil(filteredTransactions.length / pageSize);
+        if (currentPage < totalPages) {
+            currentPage++;
+            updateTransactionList(filterMonth ? filterMonth.value : 'all', filterType ? filterType.value : 'all');
+        }
+    });
+}
+
+if (pageSizeSelect) {
+    pageSizeSelect.addEventListener('change', function() {
+        pageSize = parseInt(this.value);
+        currentPage = 1; // Reset to first page when changing page size
+        updateTransactionList(filterMonth ? filterMonth.value : 'all', filterType ? filterType.value : 'all');
+    });
+}
                 
                 // Load data
                 loadData();
@@ -1967,6 +2177,16 @@ window.addEventListener('beforeunload', function() {
                 if (document.getElementById('budget-month')) {
                     document.getElementById('budget-month').value = month;
                 }
+
+		// Initialize date filters with current month range
+if (filterDateStart && filterDateEnd) {
+    const now = new Date();
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+    const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    
+    filterDateStart.value = firstDay.toISOString().split('T')[0];
+    filterDateEnd.value = lastDay.toISOString().split('T')[0];
+}
                 
                 // Update UI once to make sure everything is displayed correctly
                 updateUI();
