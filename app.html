@@ -620,17 +620,24 @@
  <script>
 
       // Check login status
-      window.addEventListener('DOMContentLoaded', function() {
-          if (localStorage.getItem('financeAppLoggedIn') !== 'true') {
-              window.location.href = 'index.html';
-          }
-      });
+     window.addEventListener('DOMContentLoaded', function() {
+    if (sessionStorage.getItem('financeAppLoggedIn') !== 'true') {
+        window.location.href = 'index.html';
+    }
+});
 
       // Add logout function
-      function logout() {
-      localStorage.removeItem('financeAppLoggedIn');
-          window.location.href = 'index.html';
-      }
+     function logout() {
+    sessionStorage.removeItem('financeAppLoggedIn');
+    window.location.href = 'index.html';
+}
+	 
+// Add this near the top of your script in app.html
+window.addEventListener('beforeunload', function() {
+    // Clear session when tab is closed
+    sessionStorage.removeItem('financeAppLoggedIn');
+});
+	 
         // Initialize app data
         let financeData = {
             wallet: 0, // Total saldo semua dompet
