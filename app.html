@@ -2246,29 +2246,6 @@ window.editWalletTransfer = function(id) {
     }
 };
         
-        // Revert the wallet balances
-        financeData.wallets[transfer.from] += transfer.amount;
-        financeData.wallets[transfer.to] -= transfer.amount;
-        
-        // Fill the form with transfer data
-        document.getElementById('wallet-transfer-from').value = transfer.from;
-        document.getElementById('wallet-transfer-to').value = transfer.to;
-        document.getElementById('wallet-transfer-amount').value = transfer.amount;
-        document.getElementById('wallet-transfer-note').value = transfer.note || '';
-        
-        // Remove the transfer
-        financeData.walletTransfers = financeData.walletTransfers.filter(t => t.id !== id);
-        
-        saveData();
-        updateUI();
-        
-        // Focus on the form
-        document.getElementById('wallet-transfer-amount').focus();
-    } catch (error) {
-        console.error("Error editing wallet transfer:", error);
-        alert('Terjadi kesalahan saat mengedit transfer');
-    }
-};
 
 // Delete wallet transfer function
 window.deleteWalletTransfer = function(id) {
