@@ -9,112 +9,71 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-        
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8fafc;
-        }
-        
-        .tab-content {
-            display: none;
-        }
-        
-        .tab-content.active {
-            display: block;
-            animation: fadeIn 0.3s ease-in-out;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .transaction-item:hover {
-            transform: translateX(5px);
-            transition: transform 0.2s ease;
-        }
-        
-        .card-glowing {
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            transition: box-shadow 0.3s ease;
-        }
-        
-        .card-glowing:hover {
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-
-        /* Added styles for better mobile experience */
+        body { font-family: 'Poppins', sans-serif; background-color: #f8fafc; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .transaction-item:hover { transform: translateX(5px); transition: transform 0.2s ease; }
+        .card-glowing { box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); transition: box-shadow 0.3s ease; }
+        .card-glowing:hover { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); }
         @media (max-width: 640px) {
-            .tab-button {
-                padding: 0.75rem 0.5rem;
-                font-size: 0.75rem;
-            }
+            .tab-button { padding: 0.75rem 0.5rem; font-size: 0.85rem; }
         }
-
-        /* Added styles for form validation */
-        input:invalid, select:invalid {
-            border-color: #ef4444;
-        }
-
-        .error-message {
-            color: #ef4444;
-            font-size: 0.75rem;
-            margin-top: 0.25rem;
-        }
+        input:invalid, select:invalid { border-color: #ef4444; }
+        .error-message { color: #ef4444; font-size: 0.75rem; margin-top: 0.25rem; }
     </style>
 </head>
 <body class="min-h-screen bg-gray-50">
-    <div class="container mx-auto px-4 py-8 max-w-4xl">
+    <div class="container mx-auto px-2 sm:px-4 py-4 sm:py-8 max-w-4xl">
         <!-- Header -->
-        <header class="mb-8 text-center">
-    <div class="relative">
-        <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/b18dd4a0-0d58-435e-84fa-c9fa6ad2469f.png" alt="Finance dashboard header with coins, wallet and savings symbols on teal background in modern design" class="w-full h-40 object-cover rounded-lg mb-4" />
-        <button onclick="logout()" class="absolute top-2 right-2 bg-white bg-opacity-80 hover:bg-opacity-100 text-red-600 font-medium py-1 px-3 rounded-md text-sm transition duration-150 ease-in-out">
-            Logout
-        </button>
-    </div>
-    <h1 class="text-3xl font-bold text-gray-800">AdLAN Money Tracker</h1>
-    <p class="text-gray-600">Kelola pendapatan, pengeluaran, dan transfer dengan mudah</p>
-</header>
+        <header class="mb-6 sm:mb-8 text-center">
+            <div class="relative">
+                <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/b18dd4a0-0d58-435e-84fa-c9fa6ad2469f.png" alt="Finance dashboard header" class="w-full h-32 sm:h-40 object-cover rounded-lg mb-4" />
+                <button onclick="logout()" class="absolute top-2 right-2 bg-white bg-opacity-80 hover:bg-opacity-100 text-red-600 font-medium py-1 px-3 rounded-md text-xs sm:text-sm transition duration-150 ease-in-out">
+                    Logout
+                </button>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">AdLAN Money Tracker</h1>
+            <p class="text-gray-600 text-sm sm:text-base">Kelola pendapatan, pengeluaran, dan transfer dengan mudah</p>
+        </header>
 
         <!-- Summary Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-            <div class="bg-white rounded-lg shadow p-6 card-glowing">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 sm:mb-8">
+            <div class="bg-white rounded-lg shadow p-4 sm:p-6 card-glowing">
                 <div class="flex items-center justify-between">
-                    <h3 class="text-lg font-medium text-gray-700">Saldo Dompet</h3>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <h3 class="text-base sm:text-lg font-medium text-gray-700">Saldo Dompet</h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </div>
-                <p id="wallet-balance" class="text-2xl font-semibold my-2">Rp0</p>
-                <span class="text-sm text-gray-500">Total saldo saat ini</span>
+                <p id="wallet-balance" class="text-xl sm:text-2xl font-semibold my-2">Rp0</p>
+                <span class="text-xs sm:text-sm text-gray-500">Total saldo saat ini</span>
             </div>
-            
-            <div class="bg-white rounded-lg shadow p-6 card-glowing">
+            <div class="bg-white rounded-lg shadow p-4 sm:p-6 card-glowing">
                 <div class="flex items-center justify-between">
-                    <h3 class="text-lg font-medium text-gray-700">Bulan Ini</h3>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <h3 class="text-base sm:text-lg font-medium text-gray-700">Bulan Ini</h3>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                     </svg>
                 </div>
-                <p id="monthly-balance" class="text-2xl font-semibold my-2">Rp0</p>
-                <span class="text-sm text-gray-500">Pendapatan - Pengeluaran</span>
+                <p id="monthly-balance" class="text-xl sm:text-2xl font-semibold my-2">Rp0</p>
+                <span class="text-xs sm:text-sm text-gray-500">Pendapatan - Pengeluaran</span>
             </div>
         </div>
-        
+
         <!-- Navigation Tabs -->
-        <div class="mb-6 border-b border-gray-200">
+        <div class="mb-4 sm:mb-6 border-b border-gray-200">
             <nav class="flex flex-col sm:flex-row">
-                <button onclick="showTab('transactions')" class="py-4 px-6 font-medium text-sm border-b-2 border-transparent hover:border-blue-500 hover:text-blue-600 focus:outline-none tab-button active">
+                <button onclick="showTab('transactions')" class="py-3 sm:py-4 px-4 sm:px-6 font-medium text-sm border-b-2 border-transparent hover:border-blue-500 hover:text-blue-600 focus:outline-none tab-button active">
                     Transaksi
                 </button>
-                <button onclick="showTab('transfer')" class="py-4 px-6 font-medium text-sm border-b-2 border-transparent hover:border-purple-500 hover:text-purple-600 focus:outline-none tab-button">
+                <button onclick="showTab('transfer')" class="py-3 sm:py-4 px-4 sm:px-6 font-medium text-sm border-b-2 border-transparent hover:border-purple-500 hover:text-purple-600 focus:outline-none tab-button">
                     Transfer
                 </button>
-                <button onclick="showTab('budget')" class="py-4 px-6 font-medium text-sm border-b-2 border-transparent hover:border-yellow-500 hover:text-yellow-600 focus:outline-none tab-button">
+                <button onclick="showTab('budget')" class="py-3 sm:py-4 px-4 sm:px-6 font-medium text-sm border-b-2 border-transparent hover:border-yellow-500 hover:text-yellow-600 focus:outline-none tab-button">
                     Budget
                 </button>
-                <button onclick="showTab('realization')" class="py-4 px-6 font-medium text-sm border-b-2 border-transparent hover:border-red-500 hover:text-red-600 focus:outline-none tab-button">
+                <button onclick="showTab('realization')" class="py-3 sm:py-4 px-4 sm:px-6 font-medium text-sm border-b-2 border-transparent hover:border-red-500 hover:text-red-600 focus:outline-none tab-button">
                     Realisasi
                 </button>
             </nav>
@@ -122,24 +81,24 @@
 
         <!-- Transactions Tab -->
         <div id="transactions" class="tab-content active">
-            <div class="bg-white rounded-lg shadow overflow-hidden mb-6">
-                <div class="p-4 border-b border-gray-200">
-                    <h2 class="text-lg font-medium text-gray-800">Catat Transaksi Baru</h2>
+            <div class="bg-white rounded-lg shadow overflow-hidden mb-4 sm:mb-6">
+                <div class="p-3 sm:p-4 border-b border-gray-200">
+                    <h2 class="text-base sm:text-lg font-medium text-gray-800">Catat Transaksi Baru</h2>
                 </div>
-                <div class="p-4">
-                    <form id="transaction-form" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="p-3 sm:p-4">
+                    <form id="transaction-form" class="grid grid-cols-1 md:grid-cols-4 gap-3 sm:gap-4">
                         <div class="col-span-1 md:col-span-2">
-                            <label for="transaction-name" class="block text-sm font-medium text-gray-700 mb-1">Nama Transaksi</label>
+                            <label for="transaction-name" class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Nama Transaksi</label>
                             <input type="text" id="transaction-name" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="Contoh: Gaji Bulanan" required>
                             <div class="error-message" id="transaction-name-error"></div>
                         </div>
                         <div>
-                            <label for="transaction-amount" class="block text-sm font-medium text-gray-700 mb-1">Jumlah (Rp)</label>
+                            <label for="transaction-amount" class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Jumlah (Rp)</label>
                             <input type="number" id="transaction-amount" min="1" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="100000" required>
                             <div class="error-message" id="transaction-amount-error"></div>
                         </div>
                         <div>
-                            <label for="transaction-type" class="block text-sm font-medium text-gray-700 mb-1">Tipe</label>
+                            <label for="transaction-type" class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Tipe</label>
                             <select id="transaction-type" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
                                 <option value="" disabled selected>-- Pilih Tipe --</option>
                                 <option value="income">Pendapatan</option>
@@ -148,12 +107,12 @@
                             <div class="error-message" id="transaction-type-error"></div>
                         </div>
                         <div class="col-span-1 md:col-span-2">
-                            <label for="transaction-date" class="block text-sm font-medium text-gray-700 mb-1">Tanggal</label>
+                            <label for="transaction-date" class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Tanggal</label>
                             <input type="date" id="transaction-date" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
                             <div class="error-message" id="transaction-date-error"></div>
                         </div>
                         <div>
-                            <label for="transaction-wallet" class="block text-sm font-medium text-gray-700 mb-1">Dompet</label>
+                            <label for="transaction-wallet" class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Dompet</label>
                             <select id="transaction-wallet" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
                                 <option value="" disabled selected>-- Pilih Dompet --</option>
                                 <option value="aldric">Aldric</option>
@@ -175,7 +134,7 @@
                             <div class="error-message" id="transaction-wallet-error"></div>
                         </div>
                         <div>
-                            <label for="transaction-category" class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
+                            <label for="transaction-category" class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Kategori</label>
                             <select id="transaction-category" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
                                 <option value="" disabled selected>-- Pilih Kategori --</option>
                                 <optgroup label="Pendapatan" id="income-categories">
@@ -189,7 +148,7 @@
                                 </optgroup>
                                 <optgroup label="Kebutuhan" id="expense-categories-needs">
                                     <option value="daycare">Daycare</option>
-                                    <option value="food_groceries">Food & Food Groceries</option>
+				    <option value="food_groceries">Food & Food Groceries</option>
                                     <option value="diapers">Diapers</option>
                                     <option value="milk">Milk</option>
                                     <option value="water_electrics">Water & Electrics</option>
@@ -239,10 +198,10 @@
             </div>
             
             <div class="bg-white rounded-lg shadow overflow-hidden">
-                <div class="p-4 border-b border-gray-200 flex justify-between items-center flex-wrap gap-2">
-                    <h2 class="text-lg font-medium text-gray-800">Riwayat Transaksi</h2>
+                <div class="p-3 sm:p-4 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                    <h2 class="text-base sm:text-lg font-medium text-gray-800">Riwayat Transaksi</h2>
                     <div class="flex gap-2 flex-wrap">
-                        <select id="filter-month" class="px-3 py-1 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        <select id="filter-month" class="px-3 py-1 border border-gray-300 rounded-md shadow-sm text-xs sm:text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                             <option value="all">Semua Bulan</option>
                             <option value="1">Januari</option>
                             <option value="2">Februari</option>
@@ -257,462 +216,425 @@
                             <option value="11">November</option>
                             <option value="12">Desember</option>
                         </select>
-                        <select id="filter-type" class="px-3 py-1 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        <select id="filter-type" class="px-3 py-1 border border-gray-300 rounded-md shadow-sm text-xs sm:text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                             <option value="all">Semua Tipe</option>
                             <option value="income">Pendapatan</option>
                             <option value="expense">Pengeluaran</option>
                         </select>
                     </div>
                 </div>
-	<div class="flex gap-2 flex-wrap mt-2">
-    <div>
-        <label for="filter-date-start" class="ml-4 block text-xs font-medium text-gray-700 mb-1">Dari Tanggal</label>
-        <input type="date" id="filter-date-start" class="ml-1 px-3 py-1 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-    </div>
-    <div>
-        <label for="filter-date-end" class="ml-4 block text-xs font-medium text-gray-700 mb-1">Sampai Tanggal</label>
-        <input type="date" id="filter-date-end" class="px-3 py-1 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-    </div>
-    <div>
-        <label for="filter-category" class="ml-4 block text-xs font-medium text-gray-700 mb-1">Kategori</label>
-        <select id="filter-category" class="px-3 py-1 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-            <option value="all">Semua Kategori</option>
-            <optgroup label="Pendapatan">
-                <option value="gaji_addo">Gaji Addo</option>
-                <option value="gaji_anne">Gaji Anne</option>
-                <option value="bonus_addo">Bonus Addo</option>
-                <option value="bonus_anne">Bonus Anne</option>
-                <option value="thr_addo">THR Addo</option>
-                <option value="thr_anne">THR Anne</option>
-                <option value="other_revenue">Other Revenue</option>
-            </optgroup>
-            <optgroup label="Kebutuhan">
-                <option value="daycare">Daycare</option>
-                <option value="food_groceries">Food & Food Groceries</option>
-                <option value="diapers">Diapers</option>
-                <option value="milk">Milk</option>
-                <option value="water_electrics">Water & Electrics</option>
-                <option value="internet">Internet</option>
-                <option value="cell_services">Cell Services</option>
-                <option value="iuran_rutin">Iuran Rutin</option>
-            </optgroup>
-            <optgroup label="Transportasi">
-                <option value="gas_ad">Gas Ad</option>
-                <option value="gas_an">Gas An</option>
-                <option value="gas_mobil">Gas Mobil</option>
-                <option value="perawatan_kendaraan">Perawatan Kendaraan</option>
-            </optgroup>
-            <optgroup label="Personal">
-                <option value="snack_ad">Snack Ad</option>
-                <option value="snack_an">Snack An</option>
-                <option value="personal_care">Personal Care</option>
-                <option value="pakaian">Pakaian</option>
-                <option value="laundry">Laundry</option>
-                <option value="medicine">Medicine</option>
-            </optgroup>
-            <optgroup label="Rumah">
-                <option value="homecare">Homecare</option>
-                <option value="sewa_garasi">Sewa Garasi</option>
-                <option value="groceries">Groceries</option>
-            </optgroup>
-            <optgroup label="Lainnya">
-                <option value="ayah">Ayah</option>
-                <option value="save_emergency">Save for Emergency</option>
-                <option value="cc_bill">CC Bill</option>
-                <option value="hiburan">Hiburan - Wisata Dll</option>
-                <option value="kondangan">Kondangan, Iuran, Dll</option>
-                <option value="cicilan">Cicilan</option>
-                <option value="other">Other Will</option>
-                <option value="other_expense">Other Expense</option>
-            </optgroup>
-        </select>
-    </div>
-    <div class="self-end">
-        <button id="apply-filters" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md text-sm transition duration-150 ease-in-out">
-            Terapkan Filter
-        </button>
-    </div>
-</div>	
+                <div class="flex gap-2 flex-wrap mt-2">
+                    <div>
+                        <label for="filter-date-start" class="ml-4 block text-xs font-medium text-gray-700 mb-1">Dari Tanggal</label>
+                        <input type="date" id="filter-date-start" class="ml-1 px-3 py-1 border border-gray-300 rounded-md shadow-sm text-xs sm:text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label for="filter-date-end" class="ml-4 block text-xs font-medium text-gray-700 mb-1">Sampai Tanggal</label>
+                        <input type="date" id="filter-date-end" class="px-3 py-1 border border-gray-300 rounded-md shadow-sm text-xs sm:text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label for="filter-category" class="ml-4 block text-xs font-medium text-gray-700 mb-1">Kategori</label>
+                        <select id="filter-category" class="px-3 py-1 border border-gray-300 rounded-md shadow-sm text-xs sm:text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            <option value="all">Semua Kategori</option>
+                            <optgroup label="Pendapatan">
+                                <option value="gaji_addo">Gaji Addo</option>
+                                <option value="gaji_anne">Gaji Anne</option>
+                                <option value="bonus_addo">Bonus Addo</option>
+                                <option value="bonus_anne">Bonus Anne</option>
+                                <option value="thr_addo">THR Addo</option>
+                                <option value="thr_anne">THR Anne</option>
+                                <option value="other_revenue">Other Revenue</option>
+                            </optgroup>
+                            <optgroup label="Kebutuhan">
+                                <option value="daycare">Daycare</option>
+                                <option value="food_groceries">Food & Food Groceries</option>
+                                <option value="diapers">Diapers</option>
+                                <option value="milk">Milk</option>
+                                <option value="water_electrics">Water & Electrics</option>
+                                <option value="internet">Internet</option>
+                                <option value="cell_services">Cell Services</option>
+                                <option value="iuran_rutin">Iuran Rutin</option>
+                            </optgroup>
+                            <optgroup label="Transportasi">
+                                <option value="gas_ad">Gas Ad</option>
+                                <option value="gas_an">Gas An</option>
+                                <option value="gas_mobil">Gas Mobil</option>
+                                <option value="perawatan_kendaraan">Perawatan Kendaraan</option>
+                            </optgroup>
+                            <optgroup label="Personal">
+                                <option value="snack_ad">Snack Ad</option>
+                                <option value="snack_an">Snack An</option>
+                                <option value="personal_care">Personal Care</option>
+                                <option value="pakaian">Pakaian</option>
+                                <option value="laundry">Laundry</option>
+                                <option value="medicine">Medicine</option>
+                            </optgroup>
+                            <optgroup label="Rumah">
+                                <option value="homecare">Homecare</option>
+                                <option value="sewa_garasi">Sewa Garasi</option>
+                                <option value="groceries">Groceries</option>
+                            </optgroup>
+                            <optgroup label="Lainnya">
+                                <option value="ayah">Ayah</option>
+                                <option value="save_emergency">Save for Emergency</option>
+                                <option value="cc_bill">CC Bill</option>
+                                <option value="hiburan">Hiburan - Wisata Dll</option>
+                                <option value="kondangan">Kondangan, Iuran, Dll</option>
+                                <option value="cicilan">Cicilan</option>
+                                <option value="other">Other Will</option>
+                                <option value="other_expense">Other Expense</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="self-end">
+                        <button id="apply-filters" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md text-xs sm:text-sm transition duration-150 ease-in-out">
+                            Terapkan Filter
+                        </button>
+                    </div>
+                </div>
                 <div class="divide-y divide-gray-200">
-    <div id="transaction-list" class="divide-y divide-gray-200">
-        <!-- Transactions will be loaded here -->
-        <div class="p-4 text-center text-gray-500">Belum ada transaksi</div>
-    </div>
-</div>
-</div>
-</div>
-<div class="p-4 border-t border-gray-200">
-    <div class="flex items-center justify-between">
-        <div class="text-sm text-gray-700">
-            Menampilkan <span id="showing-start">0</span> - <span id="showing-end">0</span> dari <span id="total-transactions">0</span> transaksi
+                    <div id="transaction-list" class="divide-y divide-gray-200">
+                        <!-- Transactions will be loaded here -->
+                        <div class="p-4 text-center text-gray-500">Belum ada transaksi</div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-3 sm:p-4 border-t border-gray-200">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                    <div class="text-xs sm:text-sm text-gray-700">
+                        Menampilkan <span id="showing-start">0</span> - <span id="showing-end">0</span> dari <span id="total-transactions">0</span> transaksi
+                    </div>
+                    <div class="flex gap-2">
+                        <select id="page-size" class="px-2 py-1 border border-gray-300 rounded-md shadow-sm text-xs sm:text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                            <option value="5">5 baris</option>
+                            <option value="10" selected>10 baris</option>
+                            <option value="25">25 baris</option>
+                            <option value="50">50 baris</option>
+                        </select>
+                        <button id="prev-page" class="px-3 py-1 border border-gray-300 rounded-md text-xs sm:text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                            Sebelumnya
+                        </button>
+                        <span id="current-page" class="px-3 py-1 border border-gray-300 rounded-md text-xs sm:text-sm bg-blue-50">1</span>
+                        <button id="next-page" class="px-3 py-1 border border-gray-300 rounded-md text-xs sm:text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                            Berikutnya
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="flex gap-2">
-            <select id="page-size" class="px-2 py-1 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                <option value="5">5 baris</option>
-                <option value="10" selected>10 baris</option>
-                <option value="25">25 baris</option>
-                <option value="50">50 baris</option>
-            </select>
-            <button id="prev-page" class="px-3 py-1 border border-gray-300 rounded-md text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
-                Sebelumnya
-            </button>
-            <span id="current-page" class="px-3 py-1 border border-gray-300 rounded-md text-sm bg-blue-50">1</span>
-            <button id="next-page" class="px-3 py-1 border border-gray-300 rounded-md text-sm hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
-                Berikutnya
-            </button>
-        </div>
-    </div>
-</div>
-
 <!--Segmen 1: Bagian akhir segmen-->
 
 
 <!--Segmen 2: Bagian awal segmen Transfer-->
-
-        <!-- Transfer Tab -->
+       <!-- Transfer Tab -->
         <div id="transfer" class="tab-content">
-            <div class="bg-white rounded-lg shadow overflow-hidden mb-6">
-                <div class="p-4 border-b border-gray-200">
-                    <h2 class="text-lg font-medium text-gray-800">Transfer Antar Dompet</h2>
+            <div class="bg-white rounded-lg shadow overflow-hidden mb-4 sm:mb-6">
+                <div class="p-3 sm:p-4 border-b border-gray-200">
+                    <h2 class="text-base sm:text-lg font-medium text-gray-800">Transfer Antar Dompet</h2>
                 </div>
-                <div class="p-4">
-                    <form id="wallet-transfer-form">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                            <div>
-                                <label for="wallet-transfer-from" class="block text-sm font-medium text-gray-700 mb-1">Dari Dompet</label>
-                                <select id="wallet-transfer-from" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500" required>
-                                    <option value="" disabled selected>-- Pilih Dompet --</option>
-                                    <option value="aldric">Aldric</option>
-                                    <option value="kas_ado">Kas Ado</option>
-                                    <option value="kas_ane">Kas Ane</option>
-                                    <option value="bca">BCA</option>
-                                    <option value="livin">Livin Mandiri</option>
-                                    <option value="jatim">Bank Jatim</option>
-                                    <option value="seabank">Seabank</option>
-                                    <option value="jago">Jago</option>
-                                    <option value="celengan">Celengan</option>
-                                    <option value="saving">Saving</option>
-                                    <option value="ksi">KSI</option>
-                                    <option value="blu">Blu</option>
-                                    <option value="kur">KUR</option>
-                                    <option value="other">Other</option>
-                                    <option value="bankmas">BankMas</option>
-                                </select>
-                                <div class="error-message" id="wallet-transfer-from-error"></div>
-                            </div>
-                            <div>
-                                <label for="wallet-transfer-to" class="block text-sm font-medium text-gray-700 mb-1">Ke Dompet</label>
-                                <select id="wallet-transfer-to" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500" required>
-                                    <option value="" disabled selected>-- Pilih Dompet --</option>
-                                    <option value="aldric">Aldric</option>
-                                    <option value="kas_ado">Kas Ado</option>
-                                    <option value="kas_ane">Kas Ane</option>
-                                    <option value="bca">BCA</option>
-                                    <option value="livin">Livin Mandiri</option>
-                                    <option value="jatim">Bank Jatim</option>
-                                    <option value="seabank">Seabank</option>
-                                    <option value="jago">Jago</option>
-                                    <option value="celengan">Celengan</option>
-                                    <option value="saving">Saving</option>
-                                    <option value="ksi">KSI</option>
-                                    <option value="blu">Blu</option>
-                                    <option value="kur">KUR</option>
-                                    <option value="other">Other</option>
-                                    <option value="bankmas">BankMas</option>
-                                </select>
-                                <div class="error-message" id="wallet-transfer-to-error"></div>
-                            </div>
+                <div class="p-3 sm:p-4">
+                    <form id="transfer-form" class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
+                        <div>
+                            <label for="transfer-from" class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Dari Dompet</label>
+                            <select id="transfer-from" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500" required>
+                                <option value="" disabled selected>-- Pilih Dompet --</option>
+                                <option value="aldric">Aldric</option>
+                                <option value="kas_ado">Kas Ado</option>
+                                <option value="kas_ane">Kas Ane</option>
+                                <option value="bca">BCA</option>
+                                <option value="livin">Livin Mandiri</option>
+                                <option value="jatim">Bank Jatim</option>
+                                <option value="seabank">Seabank</option>
+                                <option value="jago">Jago</option>
+                                <option value="celengan">Celengan</option>
+                                <option value="saving">Saving</option>
+                                <option value="ksi">KSI</option>
+                                <option value="blu">Blu</option>
+                                <option value="kur">KUR</option>
+                                <option value="other">Other</option>
+                                <option value="bankmas">BankMas</option>
+                            </select>
+                            <div class="error-message" id="transfer-from-error"></div>
                         </div>
-                        <div class="mb-4">
-                            <label for="wallet-transfer-amount" class="block text-sm font-medium text-gray-700 mb-1">Jumlah (Rp)</label>
-                            <input type="number" id="wallet-transfer-amount" min="1" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500" placeholder="1000000" required>
-                            <div class="error-message" id="wallet-transfer-amount-error"></div>
+                        <div>
+                            <label for="transfer-to" class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Ke Dompet</label>
+                            <select id="transfer-to" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500" required>
+                                <option value="" disabled selected>-- Pilih Dompet --</option>
+                                <option value="aldric">Aldric</option>
+                                <option value="kas_ado">Kas Ado</option>
+                                <option value="kas_ane">Kas Ane</option>
+                                <option value="bca">BCA</option>
+                                <option value="livin">Livin Mandiri</option>
+                                <option value="jatim">Bank Jatim</option>
+                                <option value="seabank">Seabank</option>
+                                <option value="jago">Jago</option>
+                                <option value="celengan">Celengan</option>
+                                <option value="saving">Saving</option>
+                                <option value="ksi">KSI</option>
+                                <option value="blu">Blu</option>
+                                <option value="kur">KUR</option>
+                                <option value="other">Other</option>
+                                <option value="bankmas">BankMas</option>
+                            </select>
+                            <div class="error-message" id="transfer-to-error"></div>
                         </div>
-                        <div class="mb-4">
-                            <label for="wallet-transfer-note" class="block text-sm font-medium text-gray-700 mb-1">Catatan</label>
-                            <input type="text" id="wallet-transfer-note" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500" placeholder="Contoh: Transfer dari BCA ke Kas">
+                        <div>
+                            <label for="transfer-amount" class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Jumlah (Rp)</label>
+                            <input type="number" id="transfer-amount" min="1" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500" placeholder="100000" required>
+                            <div class="error-message" id="transfer-amount-error"></div>
                         </div>
-			<div class="mb-4">
-    				<label for="wallet-transfer-date" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Transfer</label>
-   				 <input type="date" id="wallet-transfer-date" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500" required>
- 				   <div class="error-message" id="wallet-transfer-date-error"></div>
-			</div>    
-                        <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out">
-                            Transfer Antar Dompet
-                        </button>
+                        <div>
+                            <label for="transfer-date" class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Tanggal</label>
+                            <input type="date" id="transfer-date" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500" required>
+                            <div class="error-message" id="transfer-date-error"></div>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="transfer-note" class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Catatan (Opsional)</label>
+                            <input type="text" id="transfer-note" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500" placeholder="Catatan transfer...">
+                        </div>
+                        <div class="col-span-3">
+                            <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out">
+                                Catat Transfer
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>
-
-            <!-- Riwayat Transfer -->
             <div class="bg-white rounded-lg shadow overflow-hidden">
-                <div class="p-4 border-b border-gray-200">
-                    <h2 class="text-lg font-medium text-gray-800">Riwayat Transfer Antar Dompet</h2>
+                <div class="p-3 sm:p-4 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                    <h2 class="text-base sm:text-lg font-medium text-gray-800">Riwayat Transfer</h2>
                 </div>
                 <div class="divide-y divide-gray-200">
-                    <div id="wallet-transfer-history" class="divide-y divide-gray-200">
-                        <div class="p-4 text-center text-gray-500">Belum ada riwayat transfer antar dompet</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Saldo Dompet -->
-            <div class="mt-6 bg-white rounded-lg shadow overflow-hidden">
-                <div class="p-4 border-b border-gray-200">
-                    <h2 class="text-lg font-medium text-gray-800">Saldo Per Dompet</h2>
-                </div>
-                <div class="p-4">
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="wallet-balances">
-                        <!-- Wallet balances will be displayed here -->
+                    <div id="transfer-list" class="divide-y divide-gray-200">
+                        <!-- Transfer history will be loaded here -->
+                        <div class="p-4 text-center text-gray-500">Belum ada transfer</div>
                     </div>
                 </div>
             </div>
         </div>
 <!-- Segmen 2 - Bagian akhir segmen 2 -->
+	    
 <!-- Segmen 3 Budget Tab- Bagian awal segmen 3 -->
-
-<!-- Budget Tab -->
+  <!-- Budget Tab -->
         <div id="budget" class="tab-content">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-white rounded-lg shadow overflow-hidden">
-                    <div class="p-4 border-b border-gray-200">
-                        <h2 class="text-lg font-medium text-gray-800">Buat Budget Baru</h2>
-                    </div>
-                    <div class="p-4">
-                        <form id="budget-form">
-                            <div class="mb-4">
-                                <label for="budget-category" class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
-                                <select id="budget-category" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500" required>
-                                    <option value="" disabled selected>-- Pilih Kategori --</option>
-                                    <optgroup label="Kebutuhan">
-                                        <option value="daycare">Daycare</option>
-                                        <option value="food_groceries">Food & Food Groceries</option>
-                                        <option value="diapers">Diapers</option>
-                                        <option value="milk">Milk</option>
-                                        <option value="water_electrics">Water & Electrics</option>
-                                        <option value="internet">Internet</option>
-                                        <option value="cell_services">Cell Services</option>
-                                        <option value="iuran_rutin">Iuran Rutin</option>
-                                    </optgroup>
-                                    <optgroup label="Transportasi">
-                                        <option value="gas_ad">Gas Ad</option>
-                                        <option value="gas_an">Gas An</option>
-                                        <option value="gas_mobil">Gas Mobil</option>
-                                        <option value="perawatan_kendaraan">Perawatan Kendaraan</option>
-                                    </optgroup>
-                                    <optgroup label="Personal">
-                                        <option value="snack_ad">Snack Ad</option>
-                                        <option value="snack_an">Snack An</option>
-                                        <option value="personal_care">Personal Care</option>
-                                        <option value="pakaian">Pakaian</option>
-                                        <option value="laundry">Laundry</option>
-                                        <option value="medicine">Medicine</option>
-                                    </optgroup>
-                                    <optgroup label="Rumah">
-                                        <option value="homecare">Homecare</option>
-                                        <option value="sewa_garasi">Sewa Garasi</option>
-                                        <option value="groceries">Groceries</option>
-                                    </optgroup>
-                                    <optgroup label="Lainnya">
-                                        <option value="ayah">Ayah</option>
-                                        <option value="save_emergency">Save for Emergency</option>
-                                        <option value="cc_bill">CC Bill</option>
-                                        <option value="hiburan">Hiburan - Wisata Dll</option>
-                                        <option value="kondangan">Kondangan, Iuran, Dll</option>
-                                        <option value="cicilan">Cicilan</option>
-                                        <option value="other">Other Will</option>
-                                        <option value="other_expense">Other Expense</option>
-                                    </optgroup>
-                                </select>
-                                <div class="error-message" id="budget-category-error"></div>
-                            </div>
-                            <div class="mb-4">
-                                <label for="budget-amount" class="block text-sm font-medium text-gray-700 mb-1">Jumlah Budget (Rp)</label>
-                                <input type="number" id="budget-amount" min="1" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500" placeholder="1000000" required>
-                                <div class="error-message" id="budget-amount-error"></div>
-                            </div>
-                            <div class="mb-4">
-                                <label for="budget-month" class="block text-sm font-medium text-gray-700 mb-1">Bulan</label>
-                                <select id="budget-month" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500" required>
-                                    <option value="1">Januari</option>
-                                    <option value="2">Februari</option>
-                                    <option value="3">Maret</option>
-                                    <option value="4">April</option>
-                                    <option value="5">Mei</option>
-                                    <option value="6">Juni</option>
-                                    <option value="7">Juli</option>
-                                    <option value="8">Agustus</option>
-                                    <option value="9">September</option>
-                                    <option value="10">Oktober</option>
-                                    <option value="11">November</option>
-                                    <option value="12">Desember</option>
-                                </select>
-                                <div class="error-message" id="budget-month-error"></div>
-                            </div>
-                            <div class="mb-4">
-                                <label for="budget-year" class="block text-sm font-medium text-gray-700 mb-1">Tahun</label>
-                                <input type="number" id="budget-year" min="2023" max="2030" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500" placeholder="2025" required>
-                                <div class="error-message" id="budget-year-error"></div>
-                            </div>
-                            <div class="mb-4">
-                                <label for="budget-note" class="block text-sm font-medium text-gray-700 mb-1">Catatan</label>
-                                <input type="text" id="budget-note" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500" placeholder="Catatan budget">
-                            </div>
-                            <button type="submit" class="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out">
+            <div class="bg-white rounded-lg shadow overflow-hidden mb-4 sm:mb-6">
+                <div class="p-3 sm:p-4 border-b border-gray-200">
+                    <h2 class="text-base sm:text-lg font-medium text-gray-800">Atur Budget Bulanan</h2>
+                </div>
+                <div class="p-3 sm:p-4">
+                    <form id="budget-form" class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
+                        <div>
+                            <label for="budget-category" class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Kategori</label>
+                            <select id="budget-category" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500" required>
+                                <option value="" disabled selected>-- Pilih Kategori --</option>
+                                <option value="daycare">Daycare</option>
+                                <option value="food_groceries">Food & Food Groceries</option>
+                                <option value="diapers">Diapers</option>
+                                <option value="milk">Milk</option>
+                                <option value="water_electrics">Water & Electrics</option>
+                                <option value="internet">Internet</option>
+                                <option value="cell_services">Cell Services</option>
+                                <option value="iuran_rutin">Iuran Rutin</option>
+                                <option value="gas_ad">Gas Ad</option>
+                                <option value="gas_an">Gas An</option>
+                                <option value="gas_mobil">Gas Mobil</option>
+                                <option value="perawatan_kendaraan">Perawatan Kendaraan</option>
+                                <option value="snack_ad">Snack Ad</option>
+                                <option value="snack_an">Snack An</option>
+                                <option value="personal_care">Personal Care</option>
+                                <option value="pakaian">Pakaian</option>
+                                <option value="laundry">Laundry</option>
+                                <option value="medicine">Medicine</option>
+                                <option value="homecare">Homecare</option>
+                                <option value="sewa_garasi">Sewa Garasi</option>
+                                <option value="groceries">Groceries</option>
+                                <option value="ayah">Ayah</option>
+                                <option value="save_emergency">Save for Emergency</option>
+                                <option value="cc_bill">CC Bill</option>
+                                <option value="hiburan">Hiburan - Wisata Dll</option>
+                                <option value="kondangan">Kondangan, Iuran, Dll</option>
+                                <option value="cicilan">Cicilan</option>
+                                <option value="other">Other Will</option>
+                                <option value="other_expense">Other Expense</option>
+                            </select>
+                            <div class="error-message" id="budget-category-error"></div>
+                        </div>
+                        <div>
+                            <label for="budget-amount" class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Jumlah Budget (Rp)</label>
+                            <input type="number" id="budget-amount" min="1" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500" placeholder="500000" required>
+                            <div class="error-message" id="budget-amount-error"></div>
+                        </div>
+                        <div>
+                            <label for="budget-month" class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Bulan</label>
+                            <select id="budget-month" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500" required>
+                                <option value="" disabled selected>-- Pilih Bulan --</option>
+                                <option value="1">Januari</option>
+                                <option value="2">Februari</option>
+                                <option value="3">Maret</option>
+                                <option value="4">April</option>
+                                <option value="5">Mei</option>
+                                <option value="6">Juni</option>
+                                <option value="7">Juli</option>
+                                <option value="8">Agustus</option>
+                                <option value="9">September</option>
+                                <option value="10">Oktober</option>
+                                <option value="11">November</option>
+                                <option value="12">Desember</option>
+                            </select>
+                            <div class="error-message" id="budget-month-error"></div>
+                        </div>
+                        <div class="col-span-3">
+                            <button type="submit" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out">
                                 Simpan Budget
                             </button>
-                        </form>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-lg shadow overflow-hidden">
-                    <div class="p-4 border-b border-gray-200">
-                        <h2 class="text-lg font-medium text-gray-800">Ringkasan Budget</h2>
-                    </div>
-                    <div class="p-4">
-                        <div class="flex items-center justify-between mb-4">
-                            <div>
-                                <label for="budget-filter-month" class="block text-sm font-medium text-gray-700 mb-1">Bulan</label>
-                                <select id="budget-filter-month" class="px-3 py-1 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500">
-                                    <option value="1">Januari</option>
-                                    <option value="2">Februari</option>
-                                    <option value="3">Maret</option>
-                                    <option value="4">April</option>
-                                    <option value="5">Mei</option>
-                                    <option value="6">Juni</option>
-                                    <option value="7">Juli</option>
-                                    <option value="8">Agustus</option>
-                                    <option value="9">September</option>
-                                    <option value="10">Oktober</option>
-                                    <option value="11">November</option>
-                                    <option value="12">Desember</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label for="budget-filter-year" class="block text-sm font-medium text-gray-700 mb-1">Tahun</label>
-                                <select id="budget-filter-year" class="px-3 py-1 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-yellow-500 focus:border-yellow-500">
-                                    <option value="2023">2023</option>
-                                    <option value="2024">2024</option>
-                                    <option value="2025">2025</option>
-                                    <option value="2026">2026</option>
-                                </select>
-                            </div>
                         </div>
-                        <div class="mt-4">
-                            <h3 class="font-medium text-gray-700 mb-2">Total Budget Bulan Ini</h3>
-                            <p id="total-budget" class="text-xl font-semibold mb-4">Rp0</p>
-                            
-                            <div id="budget-summary" class="space-y-4">
-                                <div class="p-4 text-center text-gray-500">Belum ada budget yang dibuat</div>
-                            </div>
-                        </div>
-                    </div>
+                    </form>
                 </div>
             </div>
-
-            <div class="bg-white rounded-lg shadow overflow-hidden mt-6">
-                <div class="p-4 border-b border-gray-200 flex justify-between items-center">
-                    <h2 class="text-lg font-medium text-gray-800">Daftar Budget</h2>
+            <div class="bg-white rounded-lg shadow overflow-hidden">
+                <div class="p-3 sm:p-4 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                    <h2 class="text-base sm:text-lg font-medium text-gray-800">Daftar Budget Bulanan</h2>
                 </div>
                 <div class="divide-y divide-gray-200">
                     <div id="budget-list" class="divide-y divide-gray-200">
-                        <div class="p-4 text-center text-gray-500">Belum ada budget yang dibuat</div>
+                        <!-- Budget list will be loaded here -->
+                        <div class="p-4 text-center text-gray-500">Belum ada budget</div>
                     </div>
                 </div>
             </div>
         </div>
 <!-- Batas akhir segmen 3-->
 
-
-  <!-- Realization Tab -->
+<!-- Batas awal segmen 4-->
+ <!-- Realisasi Tab -->
         <div id="realization" class="tab-content">
-            <div class="bg-white rounded-lg shadow overflow-hidden mb-6">
-                <div class="p-4 border-b border-gray-200 flex justify-between items-center">
-                    <h2 class="text-lg font-medium text-gray-800">Realisasi Budget</h2>
-                    <div class="flex gap-2">
-                        <select id="realization-filter-month" class="px-3 py-1 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-red-500 focus:border-red-500">
-                            <option value="1">Januari</option>
-                            <option value="2">Februari</option>
-                            <option value="3">Maret</option>
-                            <option value="4">April</option>
-                            <option value="5">Mei</option>
-                            <option value="6">Juni</option>
-                            <option value="7">Juli</option>
-                            <option value="8">Agustus</option>
-                            <option value="9">September</option>
-                            <option value="10">Oktober</option>
-                            <option value="11">November</option>
-                            <option value="12">Desember</option>
-                        </select>
-                        <select id="realization-filter-year" class="px-3 py-1 border border-gray-300 rounded-md shadow-sm text-sm focus:outline-none focus:ring-red-500 focus:border-red-500">
-                            <option value="2023">2023</option>
-                            <option value="2024">2024</option>
-                            <option value="2025">2025</option>
-                            <option value="2026">2026</option>
-                        </select>
-                    </div>
+            <div class="bg-white rounded-lg shadow overflow-hidden mb-4 sm:mb-6">
+                <div class="p-3 sm:p-4 border-b border-gray-200">
+                    <h2 class="text-base sm:text-lg font-medium text-gray-800">Realisasi vs Budget</h2>
                 </div>
-                <div class="p-4">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                        <div class="bg-white rounded-lg border border-gray-200 p-4">
-                            <h3 class="text-sm font-medium text-gray-700 mb-2">Total Budget</h3>
-                            <p id="realization-total-budget" class="text-xl font-semibold">Rp0</p>
+                <div class="p-3 sm:p-4">
+                    <form id="realization-filter-form" class="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-4">
+                        <div>
+                            <label for="realization-month" class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Bulan</label>
+                            <select id="realization-month" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500">
+                                <option value="all">Semua Bulan</option>
+                                <option value="1">Januari</option>
+                                <option value="2">Februari</option>
+                                <option value="3">Maret</option>
+                                <option value="4">April</option>
+                                <option value="5">Mei</option>
+                                <option value="6">Juni</option>
+                                <option value="7">Juli</option>
+                                <option value="8">Agustus</option>
+                                <option value="9">September</option>
+                                <option value="10">Oktober</option>
+                                <option value="11">November</option>
+                                <option value="12">Desember</option>
+                            </select>
                         </div>
-                        <div class="bg-white rounded-lg border border-gray-200 p-4">
-                            <h3 class="text-sm font-medium text-gray-700 mb-2">Total Pengeluaran</h3>
-                            <p id="realization-total-expense" class="text-xl font-semibold">Rp0</p>
+                        <div>
+                            <label for="realization-category" class="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Kategori</label>
+                            <select id="realization-category" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500">
+                                <option value="all">Semua Kategori</option>
+                                <option value="daycare">Daycare</option>
+                                <option value="food_groceries">Food & Food Groceries</option>
+                                <option value="diapers">Diapers</option>
+                                <option value="milk">Milk</option>
+                                <option value="water_electrics">Water & Electrics</option>
+                                <option value="internet">Internet</option>
+                                <option value="cell_services">Cell Services</option>
+                                <option value="iuran_rutin">Iuran Rutin</option>
+                                <option value="gas_ad">Gas Ad</option>
+                                <option value="gas_an">Gas An</option>
+                                <option value="gas_mobil">Gas Mobil</option>
+                                <option value="perawatan_kendaraan">Perawatan Kendaraan</option>
+                                <option value="snack_ad">Snack Ad</option>
+                                <option value="snack_an">Snack An</option>
+                                <option value="personal_care">Personal Care</option>
+                                <option value="pakaian">Pakaian</option>
+                                <option value="laundry">Laundry</option>
+                                <option value="medicine">Medicine</option>
+                                <option value="homecare">Homecare</option>
+                                <option value="sewa_garasi">Sewa Garasi</option>
+                                <option value="groceries">Groceries</option>
+                                <option value="ayah">Ayah</option>
+                                <option value="save_emergency">Save for Emergency</option>
+                                <option value="cc_bill">CC Bill</option>
+                                <option value="hiburan">Hiburan - Wisata Dll</option>
+                                <option value="kondangan">Kondangan, Iuran, Dll</option>
+                                <option value="cicilan">Cicilan</option>
+                                <option value="other">Other Will</option>
+                                <option value="other_expense">Other Expense</option>
+                            </select>
                         </div>
-                        <div class="bg-white rounded-lg border border-gray-200 p-4">
-                            <h3 class="text-sm font-medium text-gray-700 mb-2">Sisa Budget</h3>
-                            <p id="realization-remaining" class="text-xl font-semibold">Rp0</p>
-                        </div>
-                    </div>
-                    
-                    <div id="realization-list" class="space-y-4">
+                    </form>
+                    <div id="realization-table" class="overflow-x-auto">
+                        <!-- Tabel realisasi vs budget akan muncul di sini -->
                         <div class="p-4 text-center text-gray-500">Belum ada data realisasi</div>
                     </div>
                 </div>
             </div>
-            
+            <!-- Pengaturan Data -->
             <div class="bg-white rounded-lg shadow overflow-hidden">
-                <div class="p-4 border-b border-gray-200">
-                    <h2 class="text-lg font-medium text-gray-800">Grafik Realisasi</h2>
+                <div class="p-3 sm:p-4 border-b border-gray-200">
+                    <h2 class="text-base sm:text-lg font-medium text-gray-800">Pengaturan Data</h2>
                 </div>
-                <div class="p-4">
-                    <div class="h-64 flex items-center justify-center" id="realization-chart">
-                        <p class="text-gray-500">Grafik akan ditampilkan di sini</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Data Management Section -->
-        <div class="mt-8 bg-white rounded-lg shadow overflow-hidden">
-            <div class="p-4 border-b border-gray-200">
-                <h2 class="text-lg font-medium text-gray-800">Pengaturan Data</h2>
-            </div>
-            <div class="p-4">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <button id="export-data" class="bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out">
-                        Export Data (Backup)
+                <div class="p-3 sm:p-4">
+                    <button onclick="exportData()" class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out mb-2">
+                        Export Data
                     </button>
-                    <div class="relative">
-                        <input type="file" id="import-file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" accept=".json">
-                        <button id="import-data" class="w-full bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out">
-                            Import Data (Restore)
-                        </button>
-                    </div>
-                </div>
-                <div class="mt-4">
-                    <button id="reset-data" class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out">
-                        Reset Semua Data
+                    <button onclick="importData()" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out mb-2">
+                        Import Data
                     </button>
+                    <button onclick="resetData()" class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-md transition duration-150 ease-in-out mb-2">
+                        Reset Data
+                    </button>
+                    <input type="file" id="import-file" accept=".json" class="hidden" onchange="handleImportFile(event)">
+                    <div id="data-message" class="mt-2 text-xs text-gray-600"></div>
                 </div>
             </div>
         </div>
     </div>
+    <!-- Script Placeholder: Tambahkan script JS Anda di bawah ini -->
+    <script>
+        // Fungsi tab navigasi
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            const navBtns = document.querySelectorAll('.tab-button');
+            if (tabId === 'transactions') navBtns[0].classList.add('active');
+            if (tabId === 'transfer') navBtns[1].classList.add('active');
+            if (tabId === 'budget') navBtns[2].classList.add('active');
+            if (tabId === 'realization') navBtns[3].classList.add('active');
+        }
+        // Fungsi logout (placeholder)
+        function logout() {
+            alert('Logout berhasil!');
+            // Tambahkan logika logout sesuai kebutuhan
+        }
+        // Fungsi Export Data (placeholder)
+        function exportData() {
+            alert('Export data belum diimplementasikan.');
+        }
+        // Fungsi Import Data (placeholder)
+        function importData() {
+            document.getElementById('import-file').click();
+        }
+        function handleImportFile(event) {
+            alert('Import data belum diimplementasikan.');
+        }
+        // Fungsi Reset Data (placeholder)
+        function resetData() {
+            if (confirm('Yakin ingin reset semua data?')) {
+                alert('Reset data belum diimplementasikan.');
+            }
+        }
+<!-- Batas akhir segmen 4-->
 
-
+<!-- Batas awal Script 1-->
  <script>
 
       // Check login status
